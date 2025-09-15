@@ -68,8 +68,8 @@ function control() {
       htmlElements.avisos.textContent = "Rango invalido";
       throw "Rango invalido";
     } else if (n > 5000) {
-      htmlElements.avisos.textContent = "El rango no debe se mayor a 5000";
-      throw "El rango no debe se mayor a 5000";
+      htmlElements.avisos.textContent = "El rango no puede ser mayor a 5000";
+      throw "El rango no puede ser mayor a 5000";
     }
     let opt = parseInt(htmlElements.memOpt.selectedOptions[0].value);
     if (opt == 2) {

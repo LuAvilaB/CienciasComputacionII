@@ -43,7 +43,7 @@ class Estructura {
             return this.array.push(elem)-1;
         }
         else{
-            throw 'tamaño maximo alcanzado'
+            throw 'Tamaño maximo alcanzado'
         }
     }
 
