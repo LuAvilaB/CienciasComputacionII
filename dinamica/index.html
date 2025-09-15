@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expanciones Parciales y Totales</title>
+    <link
+      rel="icon"
+      href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../public/style.css" />
+  </head>
+
+  <body>
+    <div class="cabecera">
+      <h1>Expanciones Parciales y Totales</h1>
+      <button><a href="../public/inicio.html" s>regresar</a></button>
+    </div>
+    <article class="divisor">
+      <section class="divisor-elem" style="flex: 30%">
+        <h2>Operaciones</h2>
+        <div class="contenedor operacion">
+          <h3>Estructura inicial</h3>
+          <label for="cubetas">Cubetas:</label>
+          <input
+            class="i-numero"
+            type="number"
+            id="cubetas"
+            min="1"
+            max="100"
+            placeholder="1≤X≤100"
+          />
+          <br /><br />
+          <label for="reg">Registros:</label>
+          <input
+            class="i-numero"
+            type="number"
+            id="reg"
+            min="1"
+            max="100"
+            placeholder="1≤X≤100"
+          />
+          <br /><br />
+          <label for="porexp">DO exp:</label>
+          <input
+            class="i-numero"
+            type="number"
+            id="porexp"
+            min="0"
+            max="1"
+            placeholder="0 ≤ x ≤ 1"
+          />
+          <br /><br />
+          <label for="porred">DO red:</label>
+          <input
+            class="i-numero"
+            type="number"
+            id="porred"
+            min="0"
+            placeholder="0 ≤ x"
+          />
+          <br /><br />
+          <label for="hash">Tipo:</label>
+          <select id="hash">
+            <option value="Parcial">Parcial</option>
+            <option value="Total">Total</option>
+          </select>
+          <br /><br />
+          <button onclick="iniciar()" id="iniciar">Iniciar</button>
+        </div>
+        <div class="contenedor operacion">
+          <h3>Funcionalidades</h3>
+          <label for="hash-opt">Función: </label>
+          <select id="hash-opt" style="width: 179px">
+            <option value="Modulo">Modulo</option>
+            <option value="Cuadrado">Cuadrado</option>
+            <option value="Plegamiento">Plegamiento</option>
+            <option value="Truncamiento">Truncamiento</option>
+          </select>
+          <br /><br />
+          <label for="i-ach">Clave: </label>
+          <input
+            class="i-numero"
+            min="0"
+            max="1000"
+            id="i-ach"
+            type="number"
+            placeholder="0≤X≤1000"
+          />
+          <br /><br />
+          <button onclick="ingresar()" id="btn-agrega-clave-hash">
+            Agregar
+          </button>
+          <button onclick="eliminar()" id="btn-agrega-clave-hash">
+            Eliminar
+          </button>
+          <button onclick="buscar()" id="btn-agrega-clave-hash">Buscar</button>
+        </div>
+      </section>
+      <section class="divisor-elem" style="flex: 70%" id="tabla">
+        <h2>Estructura</h2>
+        <span id="avisos" style="color: red"></span>
+        <div id="tabla-arr" class="rejilla">
+          <h3>Por favor inicialice la estructura</h3>
+        </div>
+      </section>
+    </article>
+
+    <script src="../public/hash.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

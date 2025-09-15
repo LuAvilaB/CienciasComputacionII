@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon"
+        href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+        integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../public/style.css">
+
+    <title>Índices</title>
+</head>
+
+<body>
+    
+    
+    <div class="cabecera">
+        <h1>Índices</h1>
+       <button><a href="../public/inicio.html">regresar</a></button>   
+       </div>
+    <article class="divisor">
+        <section class="divisor-elem" style="flex: 30%;">
+            <h2>Operaciones</h2>
+            <div class="contenedor operacion">
+                <h3>Estructura Inicial</h3>
+                <label for="cantreg">Cantidad de registros</label>
+                <input class="i-numero" type="number" name="cantreg" id="cantreg" min="1" max="5000" placeholder="n*10">
+                <br><br>
+                <label for="longreg">Longitud por registro dato</label>
+                <input class="i-numero" type="number" name="longreg" id="longreg" min="1" max="5000" placeholder="1≤X">
+                <br><br>
+                <label for="longind">Longitud por registro indice</label>
+                <input class="i-numero" type="number" name="longind" id="longind" min="1" max="5000" placeholder="1≤X">
+                <br><br>
+                <label for="capbloq">Capacidad por bloque</label>
+                <input class="i-numero" type="number" name="capbloq" id="capbloq" min="1" placeholder="2^n">
+                <br><br>
+                <label for="type-estruc">Tipo: </label>
+                <select id="type-estruc" style="width: 179px;">
+                    <option value="Primario">Primario</option>
+                    <option value="Secundario">Secundario</option>
+                    <option value="Acoplamiento">Acoplamiento</option>
+                    <option value="Multinivel">Multinivel</option>
+                </select>
+                <br><br>
+                <button id="iniciar-estruc">Iniciar</button>
+            </div>
+            <div class="contenedor operacion">
+                <h3>Funcionalidades</h3>
+                <label for="hash-opt">Función: </label>
+                <select id="hash-opt" style="width: 179px;">
+                    <option value="Modulo">Modulo</option>
+                    <option value="Cuadrado">Cuadrado</option>
+                    <option value="Plegamiento">Plegamiento</option>
+                    <option value="Truncamiento">Truncamiento</option>
+                </select>
+                <br><br>
+                <label for="clave">Clave: </label>
+                <input class="i-numero" id="clave" type="number" placeholder="1≤X" min="1">
+                <br><br>
+                <label for="valor">Valor: </label>
+                <input class="i-numero" id="valor"  type="text" placeholder="Ingrese el valor">
+                <br><br>
+                <input class="cb" id="cb-verP" type="checkbox">
+                <label class="sinWidth" for="cb-verP">Ver pasos </label><br>
+                <label for="i-t">Tiempo: </label>
+                <input class="i-numero" id="i-t" type="number" value="0.3" placeholder="0,3 ≤ X ≤ 5" min="0.3" max="5"><br>
+                <br><br>
+                <button onclick="insertar()">Insertar</button>
+                <button onclick="buscar()">Buscar</button>
+                <button onclick="eliminar()">Eliminar</button>
+            </div>
+        </section>
+        <section class="divisor-elem" style="flex: 70%;" id="tabla">
+            <h2>Estructura</h2> <span id="avisos" style="color: red;"></span>
+            <div id="tabla-arr" class="rejilla">
+                <h3>Por favor inicialice la estructura</h3>
+            </div>
+        </section>
+    </article>
+
+    <script src="../public/hash.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

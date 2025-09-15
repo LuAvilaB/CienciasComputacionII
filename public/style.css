@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+:root {
+    --background: #222232;
+    --color1: #343444;
+    --color-borde: rgba(255, 255, 255, 0.15);
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--background);
+    color: white;
+    font-size: 20px;
+}
+
+h1 {
+    margin-left: 3rem;
+}
+.tittle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.divisor {
+    display: flex;
+}
+.divisor-unif {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+.divisor-unif .divisor-card{
+    background-color: var(--color1);
+    /* padding: 1rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: start;
+    flex-direction: column; */
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+
+}
+.cabecera{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.divisor-elem{
+    flex: 50%;
+    padding: 1rem;
+}
+button{
+  transition: all 0.5 ease-in ;  
+}
+button a{
+    text-decoration: none;
+    color: white;
+}
+button:hover{
+    background-color: rgba(0, 255, 255, 0.269);
+
+}
+
+.contenedor {
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-bottom: 10px;
+}
+
+.operacion {
+    background: var(--color1);
+    display: inline-block;
+    padding: 1rem;
+    border-radius: 5px;
+    border: 1px solid var(--color-borde);
+}
+
+label {
+    display: inline-block;
+    font-weight: bold;
+    width: 93px;
+}
+
+.sinWidth{
+    width: unset;
+}
+
+.i-numero {
+    width: 171px;
+    outline: none;
+    margin: auto 10px auto 0;
+}
+
+.cb {
+    --tamano: 15px;
+    width: var(--tamano);
+    height: var(--tamano);
+}
+
+button {
+    cursor: pointer;
+    background: var(--background);
+    border: 0px solid white;
+    border-radius: 10px;
+    color: white;
+    padding: 7px;
+    width: 100px;
+}
+
+.rejilla {
+    /* display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 10px;
+    grid-auto-flow: row; */
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 90vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: var(--color1);
+    padding: 5px;
+}
+
+.fila {
+    margin: 5px;
+    width: auto;
+    background: var(--background);
+    max-width: 330px;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.activa {
+    background: red;
+}
+
+.fila.head {
+    font-weight: bold;
+}
+
+.col-k, .col-i {
+    display: inline-block;
+    text-align: center;
+}
+
+.col-i {
+    width: 50px;
+    text-align: center;
+}
+
+.col-k {
+    margin: 0 auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 270px;
+}
+
+.i-numero2 {
+    width: 145px;
+    outline: none;
+    margin: auto 10px auto 0;
+}
+
+.btn-eliminar {
+    width: unset;
+    border: 1px solid var(--color-borde);
+}
+
+.bloque {
+    border: 2px dashed white;
+}
+
+.celda-exp {
+    text-align: center;
+    width: 100px;
+}
