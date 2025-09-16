@@ -64,12 +64,16 @@ h1 {
 }
 
 /* Tarjetas */
-.divisor-unif .divisor-card{
+.divisor-unif .divisor-card {
     background-color: var(--color1);
     padding: 0.7rem 1rem;
     border-radius: 0.5rem;
     border: none;
+    width: 90%;      /* todas con mismo ancho relativo */
+    min-height: 200px; /* mismo alto mínimo */
+    box-sizing: border-box;
 }
+
 /* Select */
 select {
     padding: 0.5rem 1rem;
@@ -117,11 +121,14 @@ button:hover:enabled {
 }
 
 
-.cabecera{
+.cabecera {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;   /* centra verticalmente el texto y botón */
+    padding: 1rem 2rem;    /* espacio interno arriba/abajo e izquierda/derecha */
 }
+
 
 .divisor-elem{
     flex: 50%;
