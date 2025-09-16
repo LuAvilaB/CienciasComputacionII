@@ -8,12 +8,12 @@ function control() {
         <div class="col-i">i</div>
         <div class="col-k">Clave</div>
     </div>`;
-  const filaTemplate = (indice, valor) =>
-    `<div class="col-i">${indice}</div>
-        <div class="col-k">
-            <input class="i-numero2" value='${valor}' type="text">
-            <button class="btn-eliminar">Eliminar</button>
-        </div>`;
+ const filaTemplate = (indice, valor) =>
+  `<div class="col-i">${indice}</div>
+      <div class="col-k">
+          <input class="i-numero2" value='${valor}' type="text" readonly>
+      </div>`;
+
 
   inicializarEventos();
 
@@ -268,16 +268,12 @@ function control() {
       }
       let fila = document.createElement("div");
       fila.classList.add("fila");
-      // fila.innerHTML = filaTemplate(i+1, valor.substring(valor.length-largoTam));
       fila.innerHTML = filaTemplate(i + 1, valor);
       let inputFila = fila.querySelector(".i-numero2");
       inputFila.addEventListener("input", () => {
         actualizarPosArr(i);
       });
       htmlElements.inputsTabla.push(inputFila);
-      fila.querySelector(".btn-eliminar").addEventListener("click", () => {
-        eliminarPosArr(i);
-      });
       if (estructura.tamBloq) {
         bloqueActual.appendChild(fila);
         if (

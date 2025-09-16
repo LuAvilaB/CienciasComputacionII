@@ -137,7 +137,7 @@ button:hover:enabled {
 
 button a{
     text-decoration: none;
-    color: white;
+    color: #f6f2e9;
 }
 
 
@@ -236,7 +236,7 @@ label {
 }
 
 .bloque {
-    border: 2px dashed white;
+    border: 2px dashed #f6f2e9;
 }
 
 .celda-exp {
