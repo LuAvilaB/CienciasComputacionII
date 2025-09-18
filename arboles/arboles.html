@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Árboles Binarios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../estilos/estiloarboles.css">
+</head>
+<body>
+    <div class="cabecera">
+        <h1>Visualizador de Árboles Binarios</h1>
+        <button><a href="../busquedas/menu.html">Regresar</a></button>   
+    </div>
+    
+    <div class="divisor">
+        <div class="divisor-elem">
+            <h2>Operaciones</h2>
+            <div class="contenedor operacion">
+                <h3>Seleccionar Tipo de Árbol</h3>
+                <label for="tipo-arbol">Tipo de árbol:</label>
+                <select id="tipo-arbol">
+                    <option value="bst">Árbol Binario de Búsqueda (BST)</option>
+                    <option value="avl">Árbol AVL (Balanceado)</option>
+                    <option value="maxheap">Max-Heap</option>
+                    <option value="minheap">Min-Heap</option>
+                </select>
+                <button id="btn-seleccionar-arbol">Seleccionar</button>
+            </div>
+            
+            <div class="contenedor operacion">
+                <h3>Operaciones con Claves</h3>
+                <label for="clave-unica">Clave (número):</label>
+                <input type="number" id="clave-unica" placeholder="Ingrese la clave">
+                
+                <div class="operaciones-clave">
+                    <button id="btn-insertar">Insertar</button>
+                    <button id="btn-buscar">Buscar</button>
+                    <button id="btn-eliminar">Eliminar</button>
+                </div>
+                
+                <button id="btn-insertar-aleatorio">Insertar Clave Aleatoria</button>
+            </div>
+            
+            <div class="contenedor operacion">
+                <h3>Operaciones Adicionales</h3>
+                <button id="btn-limpiar">Limpiar Árbol</button>
+                <button id="btn-recargar">Recargar Página</button>
+            </div>
+            
+            <div class="contenedor operacion">
+                <h3>Recorridos</h3>
+                <div class="controles">
+                    <button id="btn-preorden">Preorden</button>
+                    <button id="btn-inorden">Inorden</button>
+                    <button id="btn-postorden">Postorden</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="divisor-elem">
+            <h2>Visualización del Árbol</h2>
+            <div id="avisos">Seleccione un tipo de árbol y comience a insertar claves.</div>
+            
+            <div class="info-arbol">
+                <p><strong>Tipo de árbol:</strong> <span id="info-tipo">No seleccionado</span></p>
+                <p><strong>Número de nodos:</strong> <span id="info-nodos">0</span></p>
+                <p><strong>Altura del árbol:</strong> <span id="info-altura">0</span></p>
+            </div>
+            
+            <div class="arbol-container">
+                <div class="arbol" id="arbol-container">
+                    <p style="text-align: center; padding: 50px;">El árbol se visualizará aquí</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="arbolscript.js"></script>
+</body>
+</html>
