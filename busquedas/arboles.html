@@ -1,92 +1,925 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arboles</title>
-    <link rel="icon"
-    href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png">
+    <title>Visualizador de Árboles Binarios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="../estilos/style.css">
-    <!-- <script src="index.js"></script> -->
-    <script  src="../public/arreglo.js"></script>
-    <script  src="../public/hash.js"></script>
-    <script src="../public/control.js"></script>
+        :root {
+            --background: #8c5d51; /* Marrón del fondo */
+            --color1: #a37568; /* Marrón más claro para tarjetas/inputs */
+            --color-borde: rgba(255, 255, 255, 0.15);
+            --text-main: #f6f2e9;
+        }
 
+        body {
+            font-family: 'Oswald', sans-serif;
+            background: var(--background);
+            color: var(--text-main);
+            font-size: 20px;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+
+        /* Fondo decorativo con líneas */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                120deg,
+                transparent,
+                transparent 200px,
+                rgba(255,255,255,0.05) 200px,
+                rgba(255,255,255,0.05) 202px
+            );
+            z-index: -1;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            text-align: center;
+            color: var(--text-main);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 2px;
+        }
+
+        /* Subtítulo */
+        .subtittle {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 0.5rem 0 2rem;
+            color: var(--text-main);
+        }
+
+        .divisor {
+            display: flex;
+        }
+
+        /* Contenedores */
+        .divisor-unif {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Tarjetas */
+        .divisor-unif .divisor-card {
+            background-color: var(--color1);
+            padding: 0.7rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            width: 90%;      /* todas con mismo ancho relativo */
+            min-height: 200px; /* mismo alto mínimo */
+            box-sizing: border-box;
+        }
+
+        /* Select */
+        select {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            background: var(--text-main);
+            color: #5c3d34;
+            font-family: inherit;
+        }
+
+        /* Radios */
+        .levels, .divisor {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+
+        label {
+            font-weight: normal;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* Botón */
+        button {
+            cursor: pointer;
+            background: rgba(246, 242, 233, 0.1);
+            border: none;
+            border-radius: 6px;
+            color: var(--text-main);
+            padding: 0.8rem 2rem;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        button:disabled {
+            background: rgba(246, 242, 233, 0.3);
+            cursor: not-allowed;
+        }
+
+        button:hover:enabled {
+            background: rgba(246, 242, 233, 0.2);
+        }
+
+        .cabecera {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;   /* centra verticalmente el texto y botón */
+            padding: 1rem 2rem;    /* espacio interno arriba/abajo e izquierda/derecha */
+        }
+
+        .divisor-elem{
+            flex: 50%;
+            padding: 1rem;
+        }
+
+        button a{
+            text-decoration: none;
+            color: #f6f2e9;
+        }
+
+        .contenedor {
+            padding-left: 50px;
+            padding-right: 50px;
+            margin-bottom: 10px;
+        }
+
+        .operacion {
+            background: var(--color1);
+            display: inline-block;
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--color-borde);
+        }
+
+        label {
+            display: inline-block;
+            font-weight: bold;
+            width: 93px;
+        }
+
+        .sinWidth{
+            width: unset;
+        }
+
+        .i-numero {
+            width: 171px;
+            outline: none;
+            margin: auto 10px auto 0;
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: none;
+            background: var(--text-main);
+            color: #5c3d34;
+            font-family: inherit;
+        }
+
+        .cb {
+            --tamano: 15px;
+            width: var(--tamano);
+            height: var(--tamano);
+        }
+
+        .rejilla {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            max-height: 90vh;
+            overflow-x: auto;
+            overflow-y: hidden;
+            background: var(--color1);
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .fila {
+            margin: 5px;
+            width: auto;
+            background: var(--background);
+            max-width: 330px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .activa {
+            background: #982f2f;
+        }
+
+        .fila.head {
+            font-weight: bold;
+        }
+
+        .col-k, .col-i {
+            display: inline-block;
+            text-align: center;
+        }
+
+        .col-i {
+            width: 50px;
+            text-align: center;
+        }
+
+        .col-k {
+            margin: 0 auto;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            width: 270px;
+        }
+
+        .i-numero2 {
+            width: 145px;
+            outline: none;
+            margin: auto 10px auto 0;
+        }
+
+        .btn-eliminar {
+            width: unset;
+            border: 1px solid var(--color-borde);
+        }
+
+        .bloque {
+            border: 2px dashed #f6f2e9;
+        }
+
+        .celda-exp {
+            text-align: center;
+            width: 100px;
+        }
+
+        /* Estilos específicos para el árbol */
+        .arbol-container {
+            min-height: 400px;
+            border: 1px solid var(--color-borde);
+            border-radius: 8px;
+            padding: 20px;
+            background-color: var(--color1);
+            overflow: auto;
+            position: relative;
+        }
+
+        .arbol {
+            position: relative;
+            width: 100%;
+            min-height: 400px;
+        }
+
+        .nodo {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #5c3d34;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 2;
+            transition: all 0.3s;
+            border: 2px solid var(--color-borde);
+        }
+
+        .nodo.resaltado {
+            background-color: #982f2f;
+            box-shadow: 0 0 10px rgba(152, 47, 47, 0.7);
+        }
+
+        .conexion {
+            position: absolute;
+            background-color: var(--text-main);
+            height: 2px;
+            transform-origin: 0 0;
+            z-index: 1;
+        }
+
+        .controles {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .controles button {
+            flex: 1;
+        }
+
+        .info-arbol {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: rgba(92, 61, 52, 0.5);
+            border-radius: 5px;
+            border-left: 4px solid var(--text-main);
+        }
+
+        .operaciones-clave {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .operaciones-clave button {
+            margin-top: 0;
+            padding: 0.5rem 1rem;
+        }
+
+        #clave-unica {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
-    
     <div class="cabecera">
-     <h1>Arboles digitales, residuos y residuos multiples</h1>
-    <button><a href="../busquedas/menu.html">Regresar</a></button>   
+        <h1>Visualizador de Árboles Binarios</h1>
+        <button><a href="../busquedas/menu.html">Regresar</a></button>   
     </div>
     
     <div class="divisor">
-        <div class="divisor-elem" style="flex: 30%;">
+        <div class="divisor-elem">
             <h2>Operaciones</h2>
             <div class="contenedor operacion">
-                <h3>Iniciar estructura</h3>
-                <label for="i-n">Rango: </label>
-                <input class="i-numero" id="i-n" type="number" placeholder="Ingrese la n">
-                <button id="btn-iniciar-arr">Iniciar</button>
-                <br>
-                <label for="mem-opt">Tipo de busqueda: </label>
-                <select id="mem-opt" style="width: 179px;">
-                    <option value="1">Interna</option>
-                    <option value="2">Externa</option>
+                <h3>Seleccionar Tipo de Árbol</h3>
+                <label for="tipo-arbol">Tipo de árbol:</label>
+                <select id="tipo-arbol">
+                    <option value="bst">Árbol Binario de Búsqueda (BST)</option>
+                    <option value="avl">Árbol AVL (Balanceado)</option>
+                    <option value="maxheap">Max-Heap</option>
+                    <option value="minheap">Min-Heap</option>
                 </select>
-                <br>
-                <button id="btn-rellenar">Rellenar arreglo</button>
-            </div>
-            <div class="contenedor operacion">
-                <h3>Agregar clave (Sólo numérica)</h3>
-                <label for="i-ac">Clave: </label>
-                <input class="i-numero" id="i-ac" type="number" placeholder="Ingrese la clave">
-                <button id="btn-agregar-clave">Agregar</button>
-            </div>
-            <div class="contenedor operacion">
-                <h3>Agregar clave por hash</h3>
-                <label for="hash-opt">Función: </label>
-                <select id="hash-opt" style="width: 179px;">
-                    <option value="1">Modulo</option>
-                    <option value="2">Cuadrado</option>
-                    <option value="3">Plegamiento</option>
-                    <option value="4">Truncamiento</option>
-                </select>
-                <br>
-                <label for="i-ach">Clave: </label>
-                <input class="i-numero" id="i-ach" type="number" placeholder="Ingrese la clave">
-                <button id="btn-agrega-clave-hash">Agregar</button>
-                <button id="btn-buscar-clave-hash">Buscar</button>
-            </div>
-            <div class="contenedor operacion">
-                <h3>Busquedas</h3>
-                <label class="sinWidth" for="busq-opt">Busqueda: </label>
-                <select id="busq-opt" style="width: 179px;">
-                    <option value="1">Secuencial</option>
-                    <option value="2">Binaria</option>
-                </select>
-                <br>
-                <label for="i-busq">Clave: </label>
-                <input class="i-numero" id="i-busq" type="number" placeholder="Ingrese la clave"><br>
-                <input class="cb" id="cb-verP" type="checkbox">
-                <label class="sinWidth" for="cb-verP">Ver pasos </label><br>
-                <label for="i-t">Tiempo: </label>
-                <input class="i-numero" id="i-t" type="number" value="0.3" placeholder="Tiempo"><br>
-                <button id="btn-buscar">Buscar</button>
+                <button id="btn-seleccionar-arbol">Seleccionar</button>
             </div>
             
+            <div class="contenedor operacion">
+                <h3>Operaciones con Claves</h3>
+                <label for="clave-unica">Clave (número):</label>
+                <input type="number" id="clave-unica" placeholder="Ingrese la clave">
+                
+                <div class="operaciones-clave">
+                    <button id="btn-insertar">Insertar</button>
+                    <button id="btn-buscar">Buscar</button>
+                    <button id="btn-eliminar">Eliminar</button>
+                </div>
+                
+                <button id="btn-insertar-aleatorio">Insertar Clave Aleatoria</button>
+            </div>
+            
+            <div class="contenedor operacion">
+                <h3>Operaciones Adicionales</h3>
+                <button id="btn-limpiar">Limpiar Árbol</button>
+                <button id="btn-recargar">Recargar Página</button>
+            </div>
+            
+            <div class="contenedor operacion">
+                <h3>Recorridos</h3>
+                <div class="controles">
+                    <button id="btn-preorden">Preorden</button>
+                    <button id="btn-inorden">Inorden</button>
+                    <button id="btn-postorden">Postorden</button>
+                </div>
+            </div>
         </div>
-        <div class="divisor-elem" style="flex: 70%;">
-            <h2>Estructura</h2>
-            <div id="avisos" style="color: red;"></div>
-            <div id="tabla-arr" class="rejilla">
-                <h3>Por favor inicialice la estructura</h3>
+        
+        <div class="divisor-elem">
+            <h2>Visualización del Árbol</h2>
+            <div id="avisos">Seleccione un tipo de árbol y comience a insertar claves.</div>
+            
+            <div class="info-arbol">
+                <p><strong>Tipo de árbol:</strong> <span id="info-tipo">No seleccionado</span></p>
+                <p><strong>Número de nodos:</strong> <span id="info-nodos">0</span></p>
+                <p><strong>Altura del árbol:</strong> <span id="info-altura">0</span></p>
+            </div>
+            
+            <div class="arbol-container">
+                <div class="arbol" id="arbol-container">
+                    <p style="text-align: center; padding: 50px;">El árbol se visualizará aquí</p>
+                </div>
             </div>
         </div>
     </div>
-    
+
+    <script>
+        // Clases para los diferentes tipos de árboles
+        class Nodo {
+            constructor(valor) {
+                this.valor = valor;
+                this.izquierdo = null;
+                this.derecho = null;
+                this.altura = 1;
+            }
+        }
+
+        class ArbolBST {
+            constructor() {
+                this.raiz = null;
+            }
+
+            insertar(valor) {
+                this.raiz = this._insertar(this.raiz, valor);
+            }
+
+            _insertar(nodo, valor) {
+                if (nodo === null) {
+                    return new Nodo(valor);
+                }
+
+                if (valor < nodo.valor) {
+                    nodo.izquierdo = this._insertar(nodo.izquierdo, valor);
+                } else if (valor > nodo.valor) {
+                    nodo.derecho = this._insertar(nodo.derecho, valor);
+                }
+
+                return nodo;
+            }
+
+            eliminar(valor) {
+                this.raiz = this._eliminar(this.raiz, valor);
+            }
+
+            _eliminar(nodo, valor) {
+                if (nodo === null) return nodo;
+
+                if (valor < nodo.valor) {
+                    nodo.izquierdo = this._eliminar(nodo.izquierdo, valor);
+                } else if (valor > nodo.valor) {
+                    nodo.derecho = this._eliminar(nodo.derecho, valor);
+                } else {
+                    if (nodo.izquierdo === null) {
+                        return nodo.derecho;
+                    } else if (nodo.derecho === null) {
+                        return nodo.izquierdo;
+                    }
+
+                    nodo.valor = this._minValor(nodo.derecho);
+                    nodo.derecho = this._eliminar(nodo.derecho, nodo.valor);
+                }
+
+                return nodo;
+            }
+
+            _minValor(nodo) {
+                let minv = nodo.valor;
+                while (nodo.izquierdo !== null) {
+                    minv = nodo.izquierdo.valor;
+                    nodo = nodo.izquierdo;
+                }
+                return minv;
+            }
+
+            buscar(valor) {
+                return this._buscar(this.raiz, valor);
+            }
+
+            _buscar(nodo, valor) {
+                if (nodo === null) return false;
+                if (nodo.valor === valor) return true;
+                
+                if (valor < nodo.valor) {
+                    return this._buscar(nodo.izquierdo, valor);
+                } else {
+                    return this._buscar(nodo.derecho, valor);
+                }
+            }
+
+            preorden() {
+                const resultado = [];
+                this._preorden(this.raiz, resultado);
+                return resultado;
+            }
+
+            _preorden(nodo, resultado) {
+                if (nodo !== null) {
+                    resultado.push(nodo.valor);
+                    this._preorden(nodo.izquierdo, resultado);
+                    this._preorden(nodo.derecho, resultado);
+                }
+            }
+
+            inorden() {
+                const resultado = [];
+                this._inorden(this.raiz, resultado);
+                return resultado;
+            }
+
+            _inorden(nodo, resultado) {
+                if (nodo !== null) {
+                    this._inorden(nodo.izquierdo, resultado);
+                    resultado.push(nodo.valor);
+                    this._inorden(nodo.derecho, resultado);
+                }
+            }
+
+            postorden() {
+                const resultado = [];
+                this._postorden(this.raiz, resultado);
+                return resultado;
+            }
+
+            _postorden(nodo, resultado) {
+                if (nodo !== null) {
+                    this._postorden(nodo.izquierdo, resultado);
+                    this._postorden(nodo.derecho, resultado);
+                    resultado.push(nodo.valor);
+                }
+            }
+
+            altura() {
+                return this._altura(this.raiz);
+            }
+
+            _altura(nodo) {
+                if (nodo === null) return 0;
+                return Math.max(this._altura(nodo.izquierdo), this._altura(nodo.derecho)) + 1;
+            }
+
+            contarNodos() {
+                return this._contarNodos(this.raiz);
+            }
+
+            _contarNodos(nodo) {
+                if (nodo === null) return 0;
+                return 1 + this._contarNodos(nodo.izquierdo) + this._contarNodos(nodo.derecho);
+            }
+        }
+
+        // Implementación básica de árbol AVL (simplificada para este ejemplo)
+        class ArbolAVL extends ArbolBST {
+            _insertar(nodo, valor) {
+                if (nodo === null) {
+                    return new Nodo(valor);
+                }
+
+                if (valor < nodo.valor) {
+                    nodo.izquierdo = this._insertar(nodo.izquierdo, valor);
+                } else if (valor > nodo.valor) {
+                    nodo.derecho = this._insertar(nodo.derecho, valor);
+                } else {
+                    return nodo; // No se permiten duplicados
+                }
+
+                // Actualizar altura
+                nodo.altura = 1 + Math.max(this._obtenerAltura(nodo.izquierdo), this._obtenerAltura(nodo.derecho));
+
+                // Obtener factor de equilibrio
+                const equilibrio = this._obtenerEquilibrio(nodo);
+
+                // Casos de desequilibrio
+                // Izquierda Izquierda
+                if (equilibrio > 1 && valor < nodo.izquierdo.valor) {
+                    return this._rotarDerecha(nodo);
+                }
+
+                // Derecha Derecha
+                if (equilibrio < -1 && valor > nodo.derecho.valor) {
+                    return this._rotarIzquierda(nodo);
+                }
+
+                // Izquierda Derecha
+                if (equilibrio > 1 && valor > nodo.izquierdo.valor) {
+                    nodo.izquierdo = this._rotarIzquierda(nodo.izquierdo);
+                    return this._rotarDerecha(nodo);
+                }
+
+                // Derecha Izquierda
+                if (equilibrio < -1 && valor < nodo.derecho.valor) {
+                    nodo.derecho = this._rotarDerecha(nodo.derecho);
+                    return this._rotarIzquierda(nodo);
+                }
+
+                return nodo;
+            }
+
+            _obtenerAltura(nodo) {
+                if (nodo === null) return 0;
+                return nodo.altura;
+            }
+
+            _obtenerEquilibrio(nodo) {
+                if (nodo === null) return 0;
+                return this._obtenerAltura(nodo.izquierdo) - this._obtenerAltura(nodo.derecho);
+            }
+
+            _rotarDerecha(y) {
+                const x = y.izquierdo;
+                const T2 = x.derecho;
+
+                // Realizar rotación
+                x.derecho = y;
+                y.izquierdo = T2;
+
+                // Actualizar alturas
+                y.altura = Math.max(this._obtenerAltura(y.izquierdo), this._obtenerAltura(y.derecho)) + 1;
+                x.altura = Math.max(this._obtenerAltura(x.izquierdo), this._obtenerAltura(x.derecho)) + 1;
+
+                return x;
+            }
+
+            _rotarIzquierda(x) {
+                const y = x.derecho;
+                const T2 = y.izquierdo;
+
+                // Realizar rotación
+                y.izquierdo = x;
+                x.derecho = T2;
+
+                // Actualizar alturas
+                x.altura = Math.max(this._obtenerAltura(x.izquierdo), this._obtenerAltura(x.derecho)) + 1;
+                y.altura = Math.max(this._obtenerAltura(y.izquierdo), this._obtenerAltura(y.derecho)) + 1;
+
+                return y;
+            }
+        }
+
+        // Variables globales
+        let arbol;
+        let tipoArbolActual = '';
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners
+            document.getElementById('btn-seleccionar-arbol').addEventListener('click', seleccionarArbol);
+            document.getElementById('btn-insertar').addEventListener('click', insertarClave);
+            document.getElementById('btn-insertar-aleatorio').addEventListener('click', insertarClaveAleatoria);
+            document.getElementById('btn-eliminar').addEventListener('click', eliminarClave);
+            document.getElementById('btn-buscar').addEventListener('click', buscarClave);
+            document.getElementById('btn-limpiar').addEventListener('click', limpiarArbol);
+            document.getElementById('btn-recargar').addEventListener('click', recargarPagina);
+            document.getElementById('btn-preorden').addEventListener('click', mostrarPreorden);
+            document.getElementById('btn-inorden').addEventListener('click', mostrarInorden);
+            document.getElementById('btn-postorden').addEventListener('click', mostrarPostorden);
+        });
+
+        function seleccionarArbol() {
+            const tipoArbol = document.getElementById('tipo-arbol').value;
+            tipoArbolActual = tipoArbol;
+            
+            switch(tipoArbol) {
+                case 'bst':
+                    arbol = new ArbolBST();
+                    document.getElementById('info-tipo').textContent = 'Árbol Binario de Búsqueda (BST)';
+                    break;
+                case 'avl':
+                    arbol = new ArbolAVL();
+                    document.getElementById('info-tipo').textContent = 'Árbol AVL (Balanceado)';
+                    break;
+                case 'maxheap':
+                case 'minheap':
+                    arbol = new ArbolBST(); // Usamos BST como base para heap en esta demo
+                    document.getElementById('info-tipo').textContent = tipoArbol === 'maxheap' ? 'Max-Heap' : 'Min-Heap';
+                    break;
+            }
+            
+            mostrarMensaje('Árbol seleccionado: ' + document.getElementById('info-tipo').textContent);
+            actualizarInformacion();
+            dibujarArbol();
+        }
+
+        function insertarClave() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            const claveInput = document.getElementById('clave-unica');
+            const clave = parseInt(claveInput.value);
+            
+            if (isNaN(clave)) {
+                mostrarMensaje('Por favor ingrese un valor numérico válido', 'error');
+                return;
+            }
+            
+            arbol.insertar(clave);
+            claveInput.value = '';
+            actualizarInformacion();
+            dibujarArbol();
+            mostrarMensaje('Clave ' + clave + ' insertada correctamente');
+        }
+
+        function insertarClaveAleatoria() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            const clave = Math.floor(Math.random() * 100) + 1;
+            document.getElementById('clave-unica').value = clave;
+            arbol.insertar(clave);
+            actualizarInformacion();
+            dibujarArbol();
+            mostrarMensaje('Clave aleatoria ' + clave + ' insertada correctamente');
+        }
+
+        function eliminarClave() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            const claveInput = document.getElementById('clave-unica');
+            const clave = parseInt(claveInput.value);
+            
+            if (isNaN(clave)) {
+                mostrarMensaje('Por favor ingrese un valor numérico válido', 'error');
+                return;
+            }
+            
+            if (arbol.buscar(clave)) {
+                arbol.eliminar(clave);
+                claveInput.value = '';
+                actualizarInformacion();
+                dibujarArbol();
+                mostrarMensaje('Clave ' + clave + ' eliminada correctamente');
+            } else {
+                mostrarMensaje('La clave ' + clave + ' no existe en el árbol', 'error');
+            }
+        }
+
+        function buscarClave() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            const claveInput = document.getElementById('clave-unica');
+            const clave = parseInt(claveInput.value);
+            
+            if (isNaN(clave)) {
+                mostrarMensaje('Por favor ingrese un valor numérico válido', 'error');
+                return;
+            }
+            
+            const encontrado = arbol.buscar(clave);
+            
+            // Resaltar el nodo si se encuentra
+            if (encontrado) {
+                resaltarNodo(clave);
+                mostrarMensaje('La clave ' + clave + ' SÍ existe en el árbol');
+            } else {
+                mostrarMensaje('La clave ' + clave + ' NO existe en el árbol', 'error');
+            }
+        }
+
+        function limpiarArbol() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            seleccionarArbol(); // Reinicia el árbol
+            mostrarMensaje('Árbol limpiado correctamente');
+        }
+
+        function recargarPagina() {
+            location.reload();
+        }
+
+        function mostrarPreorden() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            const recorrido = arbol.preorden().join(' → ');
+            mostrarMensaje('Recorrido Preorden: ' + recorrido);
+        }
+
+        function mostrarInorden() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            const recorrido = arbol.inorden().join(' → ');
+            mostrarMensaje('Recorrido Inorden: ' + recorrido);
+        }
+
+        function mostrarPostorden() {
+            if (!arbol) {
+                mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
+                return;
+            }
+            
+            const recorrido = arbol.postorden().join(' → ');
+            mostrarMensaje('Recorrido Postorden: ' + recorrido);
+        }
+
+        function mostrarMensaje(mensaje, tipo = 'info') {
+            const avisos = document.getElementById('avisos');
+            avisos.textContent = mensaje;
+            avisos.style.color = tipo === 'error' ? '#ff9999' : '#f6f2e9';
+        }
+
+        function actualizarInformacion() {
+            if (!arbol) return;
+            
+            document.getElementById('info-nodos').textContent = arbol.contarNodos();
+            document.getElementById('info-altura').textContent = arbol.altura();
+        }
+
+        function dibujarArbol() {
+            const container = document.getElementById('arbol-container');
+            container.innerHTML = '';
+            
+            if (!arbol || !arbol.raiz) {
+                container.innerHTML = '<p style="text-align: center; padding: 50px;">El árbol está vacío</p>';
+                return;
+            }
+            
+            // Calcular dimensiones
+            const altura = arbol.altura();
+            const ancho = Math.pow(2, altura) * 60;
+            container.style.width = ancho + 'px';
+            container.style.height = (altura * 100) + 'px';
+            
+            // Dibujar nodos recursivamente
+            dibujarNodo(arbol.raiz, ancho / 2, 30, ancho / 4, container);
+        }
+
+        function dibujarNodo(nodo, x, y, offset, container) {
+            if (nodo === null) return;
+            
+            // Crear elemento nodo
+            const nodoElement = document.createElement('div');
+            nodoElement.className = 'nodo';
+            nodoElement.textContent = nodo.valor;
+            nodoElement.style.left = (x - 20) + 'px';
+            nodoElement.style.top = y + 'px';
+            nodoElement.id = 'nodo-' + nodo.valor;
+            container.appendChild(nodoElement);
+            
+            // Dibujar conexiones a hijos
+            if (nodo.izquierdo !== null) {
+                const x2 = x - offset;
+                const y2 = y + 70;
+                
+                // Dibujar línea (corregido para conexiones izquierdas)
+                const linea = document.createElement('div');
+                linea.className = 'conexion';
+                
+                // Calcular la longitud y ángulo de la línea
+                const dx = x2 - x;
+                const dy = y2 - y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                linea.style.width = length + 'px';
+                linea.style.left = (x + 20) + 'px';  // Ajuste para conectar desde el borde del nodo
+                linea.style.top = (y + 20) + 'px';
+                linea.style.transform = `rotate(${angle}deg)`;
+                container.appendChild(linea);
+                
+                // Dibujar hijo izquierdo
+                dibujarNodo(nodo.izquierdo, x2, y2, offset / 2, container);
+            }
+            
+            if (nodo.derecho !== null) {
+                const x2 = x + offset;
+                const y2 = y + 70;
+                
+                // Dibujar línea
+                const linea = document.createElement('div');
+                linea.className = 'conexion';
+                
+                // Calcular la longitud y ángulo de la línea
+                const dx = x2 - x;
+                const dy = y2 - y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                linea.style.width = length + 'px';
+                linea.style.left = (x + 20) + 'px';  // Ajuste para conectar desde el borde del nodo
+                linea.style.top = (y + 20) + 'px';
+                linea.style.transform = `rotate(${angle}deg)`;
+                container.appendChild(linea);
+                
+                // Dibujar hijo derecho
+                dibujarNodo(nodo.derecho, x2, y2, offset / 2, container);
+            }
+        }
+
+        function resaltarNodo(valor) {
+            // Quitar resaltado de todos los nodos
+            const todosNodos = document.querySelectorAll('.nodo');
+            todosNodos.forEach(nodo => {
+                nodo.classList.remove('resaltado');
+            });
+            
+            // Resaltar el nodo específico
+            const nodo = document.getElementById('nodo-' + valor);
+            if (nodo) {
+                nodo.classList.add('resaltado');
+                
+                // Hacer scroll para que el nodo sea visible
+                nodo.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            }
+        }
+    </script>
 </body>
 </html>
