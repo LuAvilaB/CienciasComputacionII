@@ -14,6 +14,10 @@ class ArbolBST {
         this.raiz = null;
     }
 
+    limpiar() {
+        this.raiz = null;
+    }
+
     insertar(valor, letra) {
         this.raiz = this._insertar(this.raiz, valor, letra);
     }
@@ -70,7 +74,7 @@ class ArbolBST {
     _obtenerLetraPorValor(nodo, valor) {
         if (nodo === null) return null;
         if (nodo.valor === valor) return nodo.letra;
-        
+
         if (valor < nodo.valor) {
             return this._obtenerLetraPorValor(nodo.izquierdo, valor);
         } else {
@@ -85,7 +89,7 @@ class ArbolBST {
     _buscar(nodo, valor) {
         if (nodo === null) return false;
         if (nodo.valor === valor) return true;
-        
+
         if (valor < nodo.valor) {
             return this._buscar(nodo.izquierdo, valor);
         } else {
@@ -100,7 +104,7 @@ class ArbolBST {
     _obtenerNodoPorValor(nodo, valor) {
         if (nodo === null) return null;
         if (nodo.valor === valor) return nodo;
-        
+
         if (valor < nodo.valor) {
             return this._obtenerNodoPorValor(nodo.izquierdo, valor);
         } else {
@@ -260,15 +264,15 @@ class ArbolAVL extends ArbolBST {
 // Funciones de utilidad para convertir letras a binario
 function letraABinario(letra) {
     if (!letra || letra.length === 0) return null;
-    
+
     // Tomar solo el primer carácter
     const caracter = letra.charAt(0);
-    
+
     // Verificar que sea una letra
     if (!/^[A-Za-z]$/.test(caracter)) {
         return null;
     }
-    
+
     // Obtener el código ASCII y convertirlo a binario
     const codigoAscii = caracter.charCodeAt(0);
     return codigoAscii;
@@ -288,7 +292,7 @@ let arbol;
 let tipoArbolActual = '';
 
 // Inicialización
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Event listeners
     document.getElementById('btn-seleccionar-arbol').addEventListener('click', seleccionarArbol);
     document.getElementById('btn-insertar').addEventListener('click', insertarLetra);
@@ -300,12 +304,17 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('btn-preorden').addEventListener('click', mostrarPreorden);
     document.getElementById('btn-inorden').addEventListener('click', mostrarInorden);
     document.getElementById('btn-postorden').addEventListener('click', mostrarPostorden);
-    
+    document.getElementById('btn-exportar').addEventListener('click', exportarArbol);
+    document.getElementById('btn-importar').addEventListener('click', () => {
+        document.getElementById('input-importar').click();
+    });
+    document.getElementById('input-importar').addEventListener('change', importarArbol);
+
     // Validar entrada para permitir solo letras
-    document.getElementById('clave-unica').addEventListener('input', function(e) {
+    document.getElementById('clave-unica').addEventListener('input', function (e) {
         // Permitir solo letras
         e.target.value = e.target.value.replace(/[^A-Za-z]/g, '');
-        
+
         // Actualizar información de la letra actual
         const letra = e.target.value;
         if (letra && letra.length > 0) {
@@ -324,8 +333,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function seleccionarArbol() {
     const tipoArbol = document.getElementById('tipo-arbol').value;
     tipoArbolActual = tipoArbol;
-    
-    switch(tipoArbol) {
+
+    switch (tipoArbol) {
         case 'bst':
             arbol = new ArbolBST();
             document.getElementById('info-tipo').textContent = 'Árbol Binario de Búsqueda (BST)';
@@ -340,7 +349,7 @@ function seleccionarArbol() {
             document.getElementById('info-tipo').textContent = tipoArbol === 'maxheap' ? 'Max-Heap' : 'Min-Heap';
             break;
     }
-    
+
     mostrarMensaje('Árbol seleccionado: ' + document.getElementById('info-tipo').textContent);
     actualizarInformacion();
     dibujarArbol();
@@ -351,21 +360,21 @@ function insertarLetra() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
+
     const claveInput = document.getElementById('clave-unica');
     const letra = claveInput.value;
-    
+
     if (!letra || letra.length === 0) {
         mostrarMensaje('Por favor ingrese una letra válida', 'error');
         return;
     }
-    
+
     const valorBinario = letraABinario(letra);
     if (valorBinario === null) {
         mostrarMensaje('Por favor ingrese una letra válida (A-Z, a-z)', 'error');
         return;
     }
-    
+
     arbol.insertar(valorBinario, letra);
     claveInput.value = '';
     actualizarInformacion();
@@ -378,14 +387,14 @@ function insertarLetraAleatoria() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
+
     const letra = obtenerLetraAleatoria();
     const valorBinario = letraABinario(letra);
-    
+
     document.getElementById('clave-unica').value = letra;
     document.getElementById('info-letra').textContent = letra;
     document.getElementById('info-binario').textContent = binarioAString(valorBinario);
-    
+
     arbol.insertar(valorBinario, letra);
     actualizarInformacion();
     dibujarArbol();
@@ -397,21 +406,21 @@ function eliminarLetra() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
+
     const claveInput = document.getElementById('clave-unica');
     const letra = claveInput.value;
-    
+
     if (!letra || letra.length === 0) {
         mostrarMensaje('Por favor ingrese una letra válida', 'error');
         return;
     }
-    
+
     const valorBinario = letraABinario(letra);
     if (valorBinario === null) {
         mostrarMensaje('Por favor ingrese una letra válida (A-Z, a-z)', 'error');
         return;
     }
-    
+
     if (arbol.buscar(valorBinario)) {
         arbol.eliminar(valorBinario);
         claveInput.value = '';
@@ -428,23 +437,23 @@ function buscarLetra() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
+
     const claveInput = document.getElementById('clave-unica');
     const letra = claveInput.value;
-    
+
     if (!letra || letra.length === 0) {
         mostrarMensaje('Por favor ingrese una letra válida', 'error');
         return;
     }
-    
+
     const valorBinario = letraABinario(letra);
     if (valorBinario === null) {
         mostrarMensaje('Por favor ingrese una letra válida (A-Z, a-z)', 'error');
         return;
     }
-    
+
     const encontrado = arbol.buscar(valorBinario);
-    
+
     // Resaltar el nodo si se encuentra
     if (encontrado) {
         resaltarNodo(valorBinario);
@@ -459,8 +468,10 @@ function limpiarArbol() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
-    seleccionarArbol(); // Reinicia el árbol
+
+    arbol.limpiar();
+    actualizarInformacion();
+    dibujarArbol();
     mostrarMensaje('Árbol limpiado correctamente');
 }
 
@@ -473,7 +484,7 @@ function mostrarPreorden() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
+
     const recorrido = arbol.preorden().join(' → ');
     mostrarMensaje('Recorrido Preorden: ' + recorrido);
 }
@@ -483,7 +494,7 @@ function mostrarInorden() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
+
     const recorrido = arbol.inorden().join(' → ');
     mostrarMensaje('Recorrido Inorden: ' + recorrido);
 }
@@ -493,7 +504,7 @@ function mostrarPostorden() {
         mostrarMensaje('Primero debe seleccionar un tipo de árbol', 'error');
         return;
     }
-    
+
     const recorrido = arbol.postorden().join(' → ');
     mostrarMensaje('Recorrido Postorden: ' + recorrido);
 }
@@ -506,7 +517,7 @@ function mostrarMensaje(mensaje, tipo = 'info') {
 
 function actualizarInformacion() {
     if (!arbol) return;
-    
+
     document.getElementById('info-nodos').textContent = arbol.contarNodos();
     document.getElementById('info-altura').textContent = arbol.altura();
 }
@@ -514,25 +525,25 @@ function actualizarInformacion() {
 function dibujarArbol() {
     const container = document.getElementById('arbol-container');
     container.innerHTML = '';
-    
+
     if (!arbol || !arbol.raiz) {
         container.innerHTML = '<p style="text-align: center; padding: 50px;">El árbol está vacío</p>';
         return;
     }
-    
+
     // Calcular dimensiones
     const altura = arbol.altura();
     const ancho = Math.pow(2, altura) * 60;
     container.style.width = ancho + 'px';
     container.style.height = (altura * 100) + 'px';
-    
+
     // Dibujar nodos recursivamente
     dibujarNodo(arbol.raiz, ancho / 2, 30, ancho / 4, container);
 }
 
 function dibujarNodo(nodo, x, y, offset, container) {
     if (nodo === null) return;
-    
+
     // Crear elemento nodo
     const nodoElement = document.createElement('div');
     nodoElement.className = 'nodo';
@@ -541,52 +552,52 @@ function dibujarNodo(nodo, x, y, offset, container) {
     nodoElement.style.top = y + 'px';
     nodoElement.id = 'nodo-' + nodo.valor;
     container.appendChild(nodoElement);
-    
+
     // Dibujar conexiones a hijos
     if (nodo.izquierdo !== null) {
         const x2 = x - offset;
         const y2 = y + 70;
-        
+
         // Dibujar línea (corregido para conexiones izquierdas)
         const linea = document.createElement('div');
         linea.className = 'conexion';
-        
+
         // Calcular la longitud y ángulo de la línea
         const dx = x2 - x;
         const dy = y2 - y;
         const length = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        
+
         linea.style.width = length + 'px';
         linea.style.left = (x + 25) + 'px';  // Ajuste para conectar desde el borde del nodo
         linea.style.top = (y + 25) + 'px';
         linea.style.transform = `rotate(${angle}deg)`;
         container.appendChild(linea);
-        
+
         // Dibujar hijo izquierdo
         dibujarNodo(nodo.izquierdo, x2, y2, offset / 2, container);
     }
-    
+
     if (nodo.derecho !== null) {
         const x2 = x + offset;
         const y2 = y + 70;
-        
+
         // Dibujar línea
         const linea = document.createElement('div');
         linea.className = 'conexion';
-        
+
         // Calcular la longitud y ángulo de la línea
         const dx = x2 - x;
         const dy = y2 - y;
         const length = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        
+
         linea.style.width = length + 'px';
         linea.style.left = (x + 25) + 'px';  // Ajuste para conectar desde el borde del nodo
         linea.style.top = (y + 25) + 'px';
         linea.style.transform = `rotate(${angle}deg)`;
         container.appendChild(linea);
-        
+
         // Dibujar hijo derecho
         dibujarNodo(nodo.derecho, x2, y2, offset / 2, container);
     }
@@ -598,13 +609,100 @@ function resaltarNodo(valor) {
     todosNodos.forEach(nodo => {
         nodo.classList.remove('resaltado');
     });
-    
+
     // Resaltar el nodo específico
     const nodo = document.getElementById('nodo-' + valor);
     if (nodo) {
         nodo.classList.add('resaltado');
-        
+
         // Hacer scroll para que el nodo sea visible
         nodo.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
     }
+}
+
+function exportarArbol() {
+    if (!arbol || !arbol.raiz) {
+        mostrarMensaje('No hay árbol para exportar', 'error');
+        return;
+    }
+
+    const datosArbol = {
+        tipo: tipoArbolActual,
+        nodos: serializarNodos(arbol.raiz),
+        fecha: new Date().toISOString()
+    };
+
+    const datosJSON = JSON.stringify(datosArbol, null, 2);
+    const blob = new Blob([datosJSON], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `arbol-${tipoArbolActual}-${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    mostrarMensaje('Árbol exportado correctamente');
+}
+
+// Función para serializar los nodos del árbol
+function serializarNodos(nodo) {
+    if (!nodo) return null;
+
+    return {
+        valor: nodo.valor,
+        letra: nodo.letra,
+        izquierdo: serializarNodos(nodo.izquierdo),
+        derecho: serializarNodos(nodo.derecho)
+    };
+}
+
+// Función para importar un árbol desde un archivo JSON
+function importarArbol(evento) {
+    const archivo = evento.target.files[0];
+    if (!archivo) return;
+
+    const lector = new FileReader();
+    lector.onload = function (e) {
+        try {
+            const datos = JSON.parse(e.target.result);
+
+            // Validar la estructura del archivo
+            if (!datos.tipo || !datos.nodos) {
+                throw new Error('Formato de archivo inválido');
+            }
+
+            // Seleccionar el tipo de árbol
+            document.getElementById('tipo-arbol').value = datos.tipo;
+            seleccionarArbol();
+
+            // Reconstruir el árbol
+            arbol.raiz = deserializarNodos(datos.nodos);
+
+            actualizarInformacion();
+            dibujarArbol();
+            mostrarMensaje('Árbol importado correctamente');
+
+        } catch (error) {
+            console.error('Error al importar el árbol:', error);
+            mostrarMensaje('Error al importar el árbol: ' + error.message, 'error');
+        }
+    };
+    lector.readAsText(archivo);
+
+    // Limpiar el input para permitir cargar el mismo archivo again
+    evento.target.value = '';
+}
+
+// Función para deserializar los nodos del árbol
+function deserializarNodos(datos) {
+    if (!datos) return null;
+
+    const nodo = new Nodo(datos.valor, datos.letra);
+    nodo.izquierdo = deserializarNodos(datos.izquierdo);
+    nodo.derecho = deserializarNodos(datos.derecho);
+
+    return nodo;
 }

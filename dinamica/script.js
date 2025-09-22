@@ -48,16 +48,12 @@ function actualizarTabla() {
     const fila = document.createElement("tr");
     for (let j = -1; j < cubetas; j++) {
       const celda = document.createElement("td");
-      // celda.style.height = "5vh";
-      // celda.style.width = "5vh";
       celda.className = "fila celda-exp";
       if (i <= registros - 1) {
-        // celda.style.border =
-        //   "2px dashed " + (i === -1 || j === -1 ? "purple" : "white");
         celda.style.background =
-          (i === -1 || j === -1 ? "purple" : "white");
-        if(!(i === -1 || j === -1)){
-          celda.style.color = 'black'
+          (i === -1 || j === -1 ? "#a37568" : "#f6f2e9");
+        if (!(i === -1 || j === -1)) {
+          celda.style.color = '#8c5d51'
         }
       }
       if (i === -1 && j === -1) {
@@ -121,10 +117,14 @@ function ingresar(key = null, verificando = false) {
       return;
     }
   }
+
   if (!ingresos.includes(key) || verificando) {
     if (!verificando) ingresos.push(key);
+
     const ubicacion = obtenerUbicacion(key);
     let huboColision = true;
+
+    // Buscar espacio en la cubeta
     for (let index = 0; index < registros; index++) {
       if (estructura[ubicacion - 1][index] == undefined) {
         estructura[ubicacion - 1][index] = key;
@@ -132,17 +132,36 @@ function ingresar(key = null, verificando = false) {
         break;
       }
     }
+
+    // Si no hubo espacio, se agrega en una fila extra
     if (huboColision) {
       estructura[ubicacion - 1].push(key);
+      if (!verificando) {
+        avisos.innerHTML = `Colisión: clave ${key} agregada en fila extra.`;
+      }
     }
+
     actualizarTabla();
-    if (!verificando) rectificarDensidadOcupacion();
-    document.querySelector("#i-ach").focus();
-    avisos.innerHTML = "Elemento insertado: " + key.toString();
+    if (!verificando) {
+      const numRegsOcup = ingresos.length;
+      const disponibles = registros * cubetas;
+
+      if (numRegsOcup / disponibles > ampliamineto ||
+          numRegsOcup / cubetas < reduccion) {
+        rectificarDensidadOcupacion();
+      } else {
+        avisos.innerHTML = "Elemento insertado: " + key.toString();
+      }
+    }
+
+    if (!verificando) {
+      document.querySelector("#i-ach").focus();
+    }
   } else {
     avisos.innerHTML = "El elemento a insertar ya existe en la estructura.";
   }
 }
+
 
 function eliminar() {
   const key = parseFloat(document.querySelector("#i-ach").value);
@@ -211,8 +230,10 @@ function rellenarEstructura() {
 function rectificarDensidadOcupacion() {
   const numRegsOcup = ingresos.length;
   const disponibles = registros * cubetas;
-  if (numRegsOcup / disponibles >= ampliamineto) {
-    avisos.innerHTML = "Expansión en curso...";
+
+  // Expansión
+  if (numRegsOcup / disponibles > ampliamineto) {
+    avisos.innerHTML = "<br>Expansión en curso...";
     setTimeout(() => {
       if (tipo === "Parcial") {
         const auxmitad = parseInt(cubetas / 2);
@@ -221,19 +242,22 @@ function rectificarDensidadOcupacion() {
         cubetas = cubetas * 2;
       }
       rellenarEstructura();
-      avisos.innerHTML = "Expansión finalizada. \n";
-    }, 5000);
-  } else if (numRegsOcup / cubetas <= reduccion) {
-    avisos.innerHTML = "Reducción en curso...";
-    setTimeout(() => {
-      const nuevasCubetas =
-        tipo === "Parcial" ? parseInt(cubetas * 0.75) : cubetas / 2;
-      if (nuevasCubetas <= 1) {
-        return;
-      }
-      cubetas = nuevasCubetas;
-      rellenarEstructura();
-      avisos.innerHTML = "Reducción finalizada.\n";
+      avisos.innerHTML = "<br>Expansión finalizada.\n";
     }, 5000);
   }
+
+
+  // Reducción
+  else if (numRegsOcup / cubetas < reduccion) {
+  avisos.innerHTML = "Reducción en curso...";
+  setTimeout(() => {
+    const nuevasCubetas =
+      tipo === "Parcial" ? parseInt(cubetas * 0.75) : cubetas / 2;
+    if (nuevasCubetas <= 1) return;
+
+    cubetas = nuevasCubetas;
+    rellenarEstructura();
+    avisos.innerHTML = "Reducción finalizada.\n";
+  }, 5000);
+}
 }

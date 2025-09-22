@@ -210,7 +210,7 @@ button a{
 }
 
 .activa {
-    background: #982f2f;
+    background: #ff5c5c;
 }
 
 .fila.head {
@@ -301,7 +301,7 @@ button a{
 }
 
 .nodo.resaltado {
-    background-color: #982f2f;
+    background-color: #ff5c5c;
     box-shadow: 0 0 10px rgba(152, 47, 47, 0.7);
 }
 
@@ -380,4 +380,36 @@ button a{
     .operaciones-clave button {
         width: 100%;
     }
+    
+}
+/* Estilos para el input file personalizado */
+.file-input-container {
+    position: relative;
+    margin-top: 10px;
+}
+
+.file-input-label {
+    display: block;
+    padding: 0.8rem 2rem;
+    background: rgba(246, 242, 233, 0.1);
+    border-radius: 6px;
+    color: var(--text-main);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.file-input-label:hover {
+    background: rgba(246, 242, 233, 0.2);
+}
+
+/* Estilos para los botones de importar/exportar */
+#importar-exportar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#importar-exportar-container button {
+    width: 100%;
 }
