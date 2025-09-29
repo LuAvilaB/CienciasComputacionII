@@ -45,9 +45,6 @@ function control() {
       .querySelector("#btn-iniciar-arr")
       .addEventListener("click", eventIniciarEstr);
     document
-      .querySelector("#btn-rellenar")
-      .addEventListener("click", eventRellenar);
-    document
       .querySelector("#btn-agregar-clave")
       .addEventListener("click", eventAgregarClave);
     document
@@ -81,14 +78,7 @@ function control() {
     dibujarArreglo();
   }
 
-  function eventRellenar() {
-    if (typeof estructura == "object") {
-      for (let i = 0; i < estructura.tam; i++) {
-        estructura.array[i] = i + 1;
-      }
-      dibujarArreglo();
-    }
-  }
+  
 
   function eventAgregarClave() {
     if (estructura) {
