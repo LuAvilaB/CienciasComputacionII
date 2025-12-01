@@ -12,7 +12,7 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
@@ -55,18 +55,30 @@
           <button onclick="addNode(1)" id="btn-add-node-1">Agregar Nodo</button>
           <br /><br />
           <button onclick="addEdge(1)" id="btn-add-edge-1">Agregar Arista</button>
+          <br /><br />
+          <button onclick="deleteNode(1)" id="btn-delete-node-1">Eliminar Nodo</button>
+          <br /><br />
+          <button onclick="deleteEdge(1)" id="btn-delete-edge-1">Eliminar Arista</button>
+          <br /><br />
+          <button onclick="clearGraph(1)" id="btn-clear-graph-1">Limpiar Grafo</button>
         </div>
         <div class="contenedor operacion">
           <h3>Grafo 2</h3>
           <button onclick="addNode(2)" id="btn-add-node-2">Agregar Nodo</button>
           <br /><br />
           <button onclick="addEdge(2)" id="btn-add-edge-2">Agregar Arista</button>
+          <br /><br />
+          <button onclick="deleteNode(2)" id="btn-delete-node-2">Eliminar Nodo</button>
+          <br /><br />
+          <button onclick="deleteEdge(2)" id="btn-delete-edge-2">Eliminar Arista</button>
+          <br /><br />
+          <button onclick="clearGraph(2)" id="btn-clear-graph-2">Limpiar Grafo</button>
         </div>
        <div class="contenedor operacion">
     <h3>Operaciones entre Grafos</h3>
     <button onclick="performOperation('union')" id="btn-union">Unión</button><br><br>
     <button onclick="performOperation('intersection')" id="btn-intersection">Intersección</button><br><br>
-    <button onclick="performOperation('sum')" id="btn-sum">Suma (Todas conexiones)</button><br><br>
+    <button onclick="performOperation('sum')" id="btn-sum">Suma</button><br><br>
     <button onclick="performOperation('ring')" id="btn-ring">Suma Anillo</button><br><br>
     <button onclick="performOperation('tensor')" id="btn-tensor">Producto Tensorial</button><br><br>
     <button onclick="performOperation('cartesian')" id="btn-cartesian">Producto Cartesiano</button><br><br>

@@ -10,11 +10,11 @@ const themeColors = {
 // Colors for different operations
 const operationColors = {
     existingEdge: '#f6f2e9',    // White for existing edges
-    newEdge: '#a37568',         // Light brown for new edges
+    newEdge: '#5c5650ff',         // Gray for new edges
     graph1Node: '#8c5d51',      // Brown for graph 1
-    graph1Border: '#5c3d34',
+    graph1Border: '#f6f2e9',
     graph2Node: '#5c8c51',      // Green for graph 2  
-    graph2Border: '#3d5c34',
+    graph2Border: '#f6f2e9',
     resultNode: '#517a8c',      // Blue for result
     resultBorder: '#345c6b'
 };
@@ -171,11 +171,9 @@ function addInitialGraphs() {
     
     // Graph 2 - Línea
     cy2.add([
-        { data: { id: 'g2-A', label: 'A', graph: 2 } },
-        { data: { id: 'g2-B', label: 'B', graph: 2 } },
         { data: { id: 'g2-D', label: 'D', graph: 2 } },
-        { data: { id: 'g2-AB', source: 'g2-A', target: 'g2-B', label: 'AB', graph: 2 } },
-        { data: { id: 'g2-BD', source: 'g2-B', target: 'g2-D', label: 'BD', graph: 2 } }
+        { data: { id: 'g2-E', label: 'E', graph: 2 } },
+        { data: { id: 'g2-DE', source: 'g2-D', target: 'g2-E', label: 'DE', graph: 2 } },
     ]);
     
     // Apply layouts
@@ -271,6 +269,60 @@ function addEdge(graphNum) {
             alert('Uno o ambos nodos no existen.');
         }
     }
+}
+
+// Function to delete a node from a graph
+function deleteNode(graphNum) {
+    const cy = graphNum === 1 ? cy1 : cy2;
+    const label = prompt('Etiqueta del nodo a eliminar:');
+    if (label) {
+        const node = cy.nodes().find(n => n.data('label') === label);
+        if (node) {
+            cy.remove(node); // Removes the node and its connected edges
+            applyLayout(cy);
+            setTimeout(() => cy.fit(), 50);
+        } else {
+            alert('Nodo no encontrado.');
+        }
+    }
+}
+
+// Function to delete an edge from a graph
+function deleteEdge(graphNum) {
+    const cy = graphNum === 1 ? cy1 : cy2;
+    const nodes = cy.nodes();
+    
+    if (nodes.length < 2) {
+        alert('No hay suficientes nodos.');
+        return;
+    }
+
+    const nodeList = nodes.map(n => n.data('label')).join(', ');
+    const sourceLabel = prompt(`Etiqueta del nodo origen (${nodeList}):`);
+    const targetLabel = prompt(`Etiqueta del nodo destino (${nodeList}):`);
+    
+    if (sourceLabel && targetLabel) {
+        const edge = cy.edges().find(e => 
+            (cy.getElementById(e.data('source')).data('label') === sourceLabel && 
+             cy.getElementById(e.data('target')).data('label') === targetLabel) ||
+            (cy.getElementById(e.data('source')).data('label') === targetLabel && 
+             cy.getElementById(e.data('target')).data('label') === sourceLabel)
+        );
+        
+        if (edge) {
+            cy.remove(edge);
+            applyLayout(cy);
+        } else {
+            alert('Arista no encontrada.');
+        }
+    }
+}
+
+// Function to clear a graph
+function clearGraph(graphNum) {
+    const cy = graphNum === 1 ? cy1 : cy2;
+    cy.elements().remove();
+    setTimeout(() => cy.fit(), 50);
 }
 
 // Helper functions
@@ -675,6 +727,9 @@ function renderResult(nodes, edges, operationName) {
         
         // Apply layout with more space for complex graphs
         const layoutName = nodes.length > 10 ? 'cose' : 'circle';
+        const isComplexOperation = ['Producto Tensorial', 'Producto Cartesiano', 'Composición'].includes(operationName);
+        const spacingFactor = isComplexOperation ? 2.5 : 1.5; // More spacing for complex operations
+        
         cyResult.layout({
             name: layoutName,
             animate: true,
@@ -682,7 +737,8 @@ function renderResult(nodes, edges, operationName) {
             fit: true,
             padding: 40,
             avoidOverlap: true,
-            nodeDimensionsIncludeLabels: true
+            nodeDimensionsIncludeLabels: true,
+            spacingFactor: spacingFactor
         }).run();
         
         // Update title
