@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Creación y Operaciones con Grafos</title>
+    <link
+      rel="icon"
+      href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../estilos/general.css" />
+    <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
+    <style>
+      /* Additional styles for graph containers */
+      .graph-canvas {
+        width: 100%;
+        height: 300px;
+        border: 1px solid var(--color-borde);
+        background: var(--color1);
+        margin-bottom: 20px;
+        border-radius: 5px;
+        display: block;
+      }
+      
+      .graph-container {
+        margin-bottom: 30px;
+      }
+      
+      .graph-container h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: var(--text-main);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="cabecera">
+      <h1>Creación y Operaciones con Grafos</h1>
+      <button><a href="../grafos/grafos.html">Regresar</a></button>
+    </div>
+    <article class="divisor">
+      <section class="divisor-elem" style="flex: 30%">
+        <h2>Operaciones</h2>
+        <div class="contenedor operacion">
+          <h3>Grafo 1</h3>
+          <button onclick="addNode(1)" id="btn-add-node-1">Agregar Nodo</button>
+          <br /><br />
+          <button onclick="addEdge(1)" id="btn-add-edge-1">Agregar Arista</button>
+        </div>
+        <div class="contenedor operacion">
+          <h3>Grafo 2</h3>
+          <button onclick="addNode(2)" id="btn-add-node-2">Agregar Nodo</button>
+          <br /><br />
+          <button onclick="addEdge(2)" id="btn-add-edge-2">Agregar Arista</button>
+        </div>
+        <div class="contenedor operacion">
+          <h3>Operaciones entre Grafos</h3>
+          <button onclick="performOperation('union')" id="btn-union">Unión</button>
+          <br /><br />
+          <button onclick="performOperation('intersection')" id="btn-intersection">Intersección</button>
+          <br /><br />
+          <button onclick="performOperation('sum')" id="btn-sum">Suma (Unión Disjunta)</button>
+        </div>
+      </section>
+      <section class="divisor-elem" style="flex: 70%">
+        <h2>Estructuras de Grafos</h2>
+        
+        <div class="graph-container">
+          <h3>Grafo 1</h3>
+          <div id="graph1" class="graph-canvas"></div>
+        </div>
+        
+        <div class="graph-container">
+          <h3>Grafo 2</h3>
+          <div id="graph2" class="graph-canvas"></div>
+        </div>
+        
+        <div class="graph-container">
+          <h3>Resultado</h3>
+          <div id="result" class="graph-canvas"></div>
+        </div>
+      </section>
+    </article>
+
+    <script src="operaciones.js"></script>
+  </body>
+</html>
