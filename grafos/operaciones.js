@@ -16,7 +16,7 @@ const operationColors = {
     graph2Node: '#5c8c51',      // Green for graph 2  
     graph2Border: '#f6f2e9',
     resultNode: '#517a8c',      // Blue for result
-    resultBorder: '#345c6b'
+    resultBorder: '#f6f2e9'
 };
 
 // Style for all graphs
@@ -62,9 +62,8 @@ const createGraphStyle = (graphType = 'default') => {
                 'width': 3,
                 'line-color': 'data(edgeColor)',
                 'target-arrow-color': 'data(edgeColor)',
-                'target-arrow-shape': 'triangle',
+                'target-arrow-shape': 'none',  // Changed to 'none' to make edges undirected
                 'curve-style': 'bezier',
-                'arrow-scale': 1.2,
                 'label': 'data(label)',
                 'color': themeColors.nodeText,
                 'text-background-color': nodeColor,
@@ -173,7 +172,7 @@ function addInitialGraphs() {
     cy2.add([
         { data: { id: 'g2-D', label: 'D', graph: 2 } },
         { data: { id: 'g2-E', label: 'E', graph: 2 } },
-        { data: { id: 'g2-DE', source: 'g2-D', target: 'g2-E', label: 'DE', graph: 2 } },
+        { data: { id: 'g2-DE', source: 'g2-D', target: 'g2-E', label: 'DE', graph: 2 } }
     ]);
     
     // Apply layouts
@@ -465,24 +464,27 @@ function performRingSum() {
         }
     });
     
-    // Create edges from ring sum set
+    // Create edges from ring sum set, avoiding duplicates
     const resultEdges = [];
     let edgeCounter = 1;
     
     ringSumEdges.forEach(edgeKey => {
         const [sourceLabel, targetLabel] = edgeKey.split('-');
-        const sourceNode = resultNodes.find(n => n.label === sourceLabel);
-        const targetNode = resultNodes.find(n => n.label === targetLabel);
-        
-        if (sourceNode && targetNode) {
-            resultEdges.push({
-                id: `ring-e${edgeCounter++}`,
-                source: sourceNode.id,
-                target: targetNode.id,
-                label: `${sourceLabel}${targetLabel}`,
-                edgeType: 'existing',
-                edgeColor: operationColors.existingEdge
-            });
+        // Only add if sourceLabel < targetLabel to avoid duplicate edges
+        if (sourceLabel < targetLabel) {
+            const sourceNode = resultNodes.find(n => n.label === sourceLabel);
+            const targetNode = resultNodes.find(n => n.label === targetLabel);
+            
+            if (sourceNode && targetNode) {
+                resultEdges.push({
+                    id: `ring-e${edgeCounter++}`,
+                    source: sourceNode.id,
+                    target: targetNode.id,
+                    label: `${sourceLabel}${targetLabel}`,
+                    edgeType: 'existing',
+                    edgeColor: operationColors.existingEdge
+                });
+            }
         }
     });
     
