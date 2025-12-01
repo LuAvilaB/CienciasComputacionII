@@ -62,14 +62,16 @@
           <br /><br />
           <button onclick="addEdge(2)" id="btn-add-edge-2">Agregar Arista</button>
         </div>
-        <div class="contenedor operacion">
-          <h3>Operaciones entre Grafos</h3>
-          <button onclick="performOperation('union')" id="btn-union">Unión</button>
-          <br /><br />
-          <button onclick="performOperation('intersection')" id="btn-intersection">Intersección</button>
-          <br /><br />
-          <button onclick="performOperation('sum')" id="btn-sum">Suma (Unión Disjunta)</button>
-        </div>
+       <div class="contenedor operacion">
+    <h3>Operaciones entre Grafos</h3>
+    <button onclick="performOperation('union')" id="btn-union">Unión</button><br><br>
+    <button onclick="performOperation('intersection')" id="btn-intersection">Intersección</button><br><br>
+    <button onclick="performOperation('sum')" id="btn-sum">Suma (Todas conexiones)</button><br><br>
+    <button onclick="performOperation('ring')" id="btn-ring">Suma Anillo</button><br><br>
+    <button onclick="performOperation('tensor')" id="btn-tensor">Producto Tensorial</button><br><br>
+    <button onclick="performOperation('cartesian')" id="btn-cartesian">Producto Cartesiano</button><br><br>
+    <button onclick="performOperation('composition')" id="btn-composition">Composición</button>
+</div>
       </section>
       <section class="divisor-elem" style="flex: 70%">
         <h2>Estructuras de Grafos</h2>
