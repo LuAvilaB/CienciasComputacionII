@@ -12,7 +12,7 @@ function hashCuadrado(key, n){
     let cuadradoStr = cuadrado.toString();
     let diferencia = cuadradoStr.length-nStr.length+1;
     let digsARecortar = diferencia/2; // digitos a recortar por cada lado
-    nuevaKey = cuadradoStr.substring(digsARecortar, cuadradoStr.length-digsARecortar);
+    let nuevaKey = cuadradoStr.substring(digsARecortar, cuadradoStr.length-digsARecortar);
     nuevaKey = parseInt(nuevaKey)+1;
     // if(cuadradoStr.length > nStr.length-1){
     // }
@@ -66,9 +66,10 @@ function hashPleg(key, n){
     for(let i=0; i<digitosDeKey; i+=numerosSignificativos){
         sumaDigitos += parseInt(strKey.substring(i, i+numerosSignificativos));
     }
-    strSumDigs = sumaDigitos.toString();
+    let strSumDigs = sumaDigitos.toString();
     if(sumaDigitos.toString().length >= numerosSignificativos+1){
         sumaDigitos = parseInt(strSumDigs.substring(strSumDigs.length-numerosSignificativos));
     }
     return sumaDigitos+1;
 }
+

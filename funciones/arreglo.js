@@ -164,7 +164,6 @@ class Estructura {
         return -1;
     }
 }
-prueba = [1,3,5,6,7]
 
 function binarySearch(value, list) {
     let first = 0;    //left endpoint 

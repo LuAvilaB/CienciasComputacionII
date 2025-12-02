@@ -1,6 +1,6 @@
 let cubetas = 0;
 let registros = 0;
-let ampliamineto = 0.0;
+let ampliamiento = 0.0;
 let reduccion = 0.0;
 let tipo = "";
 let estructura;
@@ -86,8 +86,8 @@ function iniciar() {
     avisos.innerHTML = "Registros debe ser un número entre 1 y 100";
     return;
   }
-  ampliamineto = parseFloat(document.querySelector("#porexp").value);
-  if (ampliamineto < 0 || ampliamineto > 1) {
+  ampliamiento = parseFloat(document.querySelector("#porexp").value);
+  if (ampliamiento < 0 || ampliamiento > 1) {
     avisos.innerHTML =
       "Densidad de ocupación de expansión debe ser un número entre 0 y 1";
     return;
@@ -146,7 +146,7 @@ function ingresar(key = null, verificando = false) {
       const numRegsOcup = ingresos.length;
       const disponibles = registros * cubetas;
 
-      if (numRegsOcup / disponibles > ampliamineto ||
+      if (numRegsOcup / disponibles > ampliamiento ||
           numRegsOcup / cubetas < reduccion) {
         rectificarDensidadOcupacion();
       } else {
@@ -184,7 +184,7 @@ function eliminar() {
     rectificarDensidadOcupacion();
     avisos.innerHTML = "Elemento eliminado: " + key.toString();
   } else {
-    avisos.innerHTML = "El elemento e eliminar no existe en la estructura.";
+    avisos.innerHTML = "El elemento a eliminar no existe en la estructura.";
   }
 }
 
@@ -232,7 +232,7 @@ function rectificarDensidadOcupacion() {
   const disponibles = registros * cubetas;
 
   // Expansión
-  if (numRegsOcup / disponibles > ampliamineto) {
+  if (numRegsOcup / disponibles > ampliamiento) {
     avisos.innerHTML = "<br>Expansión en curso...";
     setTimeout(() => {
       if (tipo === "Parcial") {
