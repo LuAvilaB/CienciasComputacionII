@@ -1,91 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visualizador de Árboles Binarios</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../estilos/estiloarboles.css">
-</head>
-
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Árbol de Huffman</title>
+    <link
+      rel="icon"
+      href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../estilos/general.css" />
+    <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
+  </head>
+  <body>
     <div class="cabecera">
-        <h1>Visualizador de Árboles Binarios</h1>
-        <button><a href="../busquedas/menu.html">Regresar</a></button>
+      <h1>Árbol de Huffman</h1>
+      <button><a href="../grafos/selectou1o2.html">Regresar</a></button>
     </div>
-
-    <div class="divisor">
-        <div class="divisor-elem">
-            <h2>Operaciones</h2>
-            <div class="contenedor operacion">
-                <h3>Seleccionar Tipo de Árbol</h3>
-                <label for="tipo-arbol">Tipo de árbol:</label>
-                <select id="tipo-arbol">
-                    <option value="bst">Árbol Binario de Búsqueda (BST)</option>
-                    <option value="avl">Árbol AVL (Balanceado)</option>
-                    <option value="maxheap">Max-Heap</option>
-                    <option value="minheap">Min-Heap</option>
-                </select>
-                <button id="btn-seleccionar-arbol">Seleccionar</button>
-            </div>
-
-            <div class="contenedor operacion">
-                <h3>Operaciones con Letras</h3>
-                <label for="clave-unica">Letra (A-Z, a-z):</label>
-                <input type="text" id="clave-unica" placeholder="Ingrese una letra" maxlength="1">
-
-                <div class="operaciones-clave">
-                    <button id="btn-insertar">Insertar</button>
-                    <button id="btn-buscar">Buscar</button>
-                    <button id="btn-eliminar">Eliminar</button>
-                </div>
-
-                <button id="btn-insertar-aleatorio">Insertar Letra Aleatoria</button>
-            </div>
-
-            <div class="contenedor operacion">
-                <h3>Operaciones Adicionales</h3>
-                <button id="btn-limpiar">Limpiar Árbol</button>
-                <button id="btn-exportar">Exportar Árbol</button>
-                <button id="btn-importar">Importar Árbol</button>
-                <input type="file" id="input-importar" accept=".json" style="display: none;">
-            </div>
-
-
-            <div class="contenedor operacion">
-                <h3>Recorridos</h3>
-                <div class="controles">
-                    <button id="btn-preorden">Preorden</button>
-                    <button id="btn-inorden">Inorden</button>
-                    <button id="btn-postorden">Postorden</button>
-                </div>
-            </div>
+    <article class="divisor">
+      <section class="divisor-elem" style="flex: 30%">
+        <h2>Operaciones</h2>
+        <div class="contenedor operacion">
+          <h3>Entrada</h3>
+          <label for="input-text">Ingresa texto para calcular frecuencias:</label><br>
+          <textarea id="input-text" rows="4" cols="30" placeholder="Ej: Hola mundo"></textarea><br><br>
+          <button onclick="generateHuffmanTree()" id="btn-generate">Generar Árbol de Huffman</button><br><br>
+          <button onclick="clearTree()" id="btn-clear">Limpiar Árbol</button>
         </div>
-
-        <div class="divisor-elem">
-            <h2>Visualización del Árbol</h2>
-            <div id="avisos">Seleccione un tipo de árbol y comience a insertar letras.</div>
-
-            <div class="info-arbol">
-                <p><strong>Tipo de árbol:</strong> <span id="info-tipo">No seleccionado</span></p>
-                <p><strong>Número de nodos:</strong> <span id="info-nodos">0</span></p>
-                <p><strong>Altura del árbol:</strong> <span id="info-altura">0</span></p>
-                <p><strong>Letra actual:</strong> <span id="info-letra">-</span></p>
-                <p><strong>Valor binario:</strong> <span id="info-binario">-</span></p>
-            </div>
-
-            <div class="arbol-container">
-                <div class="arbol" id="arbol-container">
-                    <p style="text-align: center; padding: 50px;">El árbol se visualizará aquí</p>
-                </div>
-            </div>
+        <div class="contenedor operacion">
+          <h3>Frecuencias</h3>
+          <div id="frequencies" style="max-height: 200px; overflow-y: auto;"></div>
         </div>
-    </div>
-
+      </section>
+      <section class="divisor-elem" style="flex: 70%">
+        <h2>Visualización del Árbol</h2>
+        <div class="graph-container">
+          <h3>Árbol de Huffman</h3>
+          <div id="huffman-tree" class="graph-canvas"></div>
+        </div>
+      </section>
+    </article>
     <script src="arbolscript.js"></script>
-</body>
-
+  </body>
 </html>
