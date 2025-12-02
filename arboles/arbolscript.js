@@ -23,24 +23,35 @@ class HuffmanNode {
 function getRelevantBits(letter) {
   const ascii = letter.charCodeAt(0);
   const binary = ascii.toString(2).padStart(8, '0'); // 8 bits
-  return binary.slice(3); // Ignorar primeros 3 bits, tomar los 5 siguientes
+  return binary.slice(3); // Ignorar primeros 3 bits, tomar los 5 siguientes (últimos 5)
 }
 
 // Función para insertar una letra en el Trie Binario (invertido: 1 izquierda/arriba, 0 derecha/abajo)
-function insertIntoBinaryTrie(root, letter) {
+function insertIntoDigitalTree(root, letter) {
   const bits = getRelevantBits(letter);
+  if (!root.letter) {
+    root.isEnd = true;
+    root.letter = letter;
+    return;
+  }
   let node = root;
-  for (let bit of bits) {
-    if (bit === '1') { // 1 va a la izquierda (arriba en TB)
-      if (!node.left) node.left = new BinaryTrieNode('1');
-      node = node.left;
-    } else { // 0 va a la derecha (abajo en TB)
-      if (!node.right) node.right = new BinaryTrieNode('0');
-      node = node.right;
+  let bitIndex = 0;
+  while (bitIndex < bits.length) {
+    const bit = bits[bitIndex];
+    let nextNode = bit === '0' ? node.left : node.right;
+    if (!nextNode) {
+      nextNode = new BinaryTrieNode(bit);
+      if (bit === '0') node.left = nextNode;
+      else node.right = nextNode;
+      nextNode.isEnd = true;
+      nextNode.letter = letter;
+      return;
+    } else {
+      node = nextNode;
+      bitIndex++;
     }
   }
-  node.isEnd = true;
-  node.letter = letter;
+  // Si llega aquí, no insertar (no debería suceder según las reglas)
 }
 
 // Función para construir el Trie Binario para Residuos (simple inserción)
@@ -69,10 +80,9 @@ function buildMultiResidualBinaryTrie(text) {
 // Función para construir el Trie Binario para Digital (Trie estándar, pero con bits)
 function buildDigitalBinaryTrie(text) {
   const root = new BinaryTrieNode();
-  const words = text.split(/\s+/).filter(w => w); // Separar por espacios para palabras
-  for (let word of words) {
-    for (let char of word) {
-      insertIntoBinaryTrie(root, char);
+  for (let char of text) {
+    if (char !== ' ') {
+      insertIntoDigitalTree(root, char);
     }
   }
   return root;
@@ -106,13 +116,13 @@ function buildHuffmanTree(text) {
 function binaryTrieToCytoscapeElements(node, parentId = null, elements = [], idCounter = { value: 0 }, path = '') {
   if (!node) return elements;
   const nodeId = `node-${idCounter.value++}`;
-  const label = node.isEnd ? `${node.letter} (${path})` : path || 'root';
+  const label = node.isEnd ? `${node.letter}${path ? `(${path})` : ''}` : path || 'root';
   elements.push({ data: { id: nodeId, label: label } });
   if (parentId) {
     elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId } });
   }
-  binaryTrieToCytoscapeElements(node.left, nodeId, elements, idCounter, path + '1'); // 1 arriba
-  binaryTrieToCytoscapeElements(node.right, nodeId, elements, idCounter, path + '0'); // 0 abajo
+  binaryTrieToCytoscapeElements(node.left, nodeId, elements, idCounter, path + '0'); // 0 izquierda
+  binaryTrieToCytoscapeElements(node.right, nodeId, elements, idCounter, path + '1'); // 1 derecha
   return elements;
 }
 
@@ -220,17 +230,14 @@ function generateTree() {
     }
     elements = binaryTrieToCytoscapeElements(root);
   } else if (type === 'digital') {
-    title.textContent = 'Árbol Digital (Trie Binario)';
-    root = buildDigitalBinaryTrie(input);
-    detailsDiv.innerHTML = '<h4>Bits procesados por palabra:</h4>';
-    const words = input.split(/\s+/).filter(w => w);
-    for (let word of words) {
-      for (let char of word) {
-        detailsDiv.innerHTML += `<p>${char} (${word}): ${getRelevantBits(char)}</p>`;
-      }
-    }
-    elements = binaryTrieToCytoscapeElements(root);
+  title.textContent = 'Árbol Digital';
+  root = buildDigitalBinaryTrie(input);
+  detailsDiv.innerHTML = '<h4>Binario de 5 dígitos:</h4>';
+  for (let char of input.replace(/\s/g, '')) {
+    detailsDiv.innerHTML += `<p>${char}: ${getRelevantBits(char)}</p>`;
   }
+  elements = binaryTrieToCytoscapeElements(root);
+}
 
   cy.add(elements);
   cy.layout({ name: 'dagre', rankDir: 'TB', padding: 10 }).run();
