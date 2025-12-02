@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Árbol de Huffman</title>
+    <title>Árbol de Huffman y Otros</title>
     <link
       rel="icon"
       href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png"
@@ -11,38 +11,43 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="../estilos/general.css" />
-    <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+    <script src="https://unpkg.com/dagre/dist/dagre.min.js"></script>
+    <script src="https://unpkg.com/cytoscape-dagre/cytoscape-dagre.js"></script>
   </head>
   <body>
     <div class="cabecera">
-      <h1>Árbol de Huffman</h1>
+      <h1>Árbol de Huffman y Otros</h1>
       <button><a href="../grafos/selectou1o2.html">Regresar</a></button>
     </div>
     <article class="divisor">
       <section class="divisor-elem" style="flex: 30%">
         <h2>Operaciones</h2>
         <div class="contenedor operacion">
-          <h3>Entrada</h3>
-          <label for="input-text">Ingresa texto para calcular frecuencias:</label><br>
-          <textarea id="input-text" rows="4" cols="30" placeholder="Ej: Hola mundo"></textarea><br><br>
-          <button onclick="generateHuffmanTree()" id="btn-generate">Generar Árbol de Huffman</button><br><br>
+          <h3>Seleccionar Tipo de Árbol</h3>
+          <select id="tree-type">
+            <option value="huffman">Árbol de Huffman</option>
+            <option value="residual">Árbol de Residuos</option>
+            <option value="multi-residual">Árbol de Residuos Múltiples</option>
+            <option value="digital">Árbol Digital (Trie)</option>
+          </select><br><br>
+          <label for="input-data">Ingresa letras (texto):</label><br>
+          <textarea id="input-data" rows="4" cols="30" placeholder="Ej: Hola mundo"></textarea><br><br>
+          <button onclick="generateTree()" id="btn-generate">Generar Árbol</button><br><br>
           <button onclick="clearTree()" id="btn-clear">Limpiar Árbol</button>
         </div>
         <div class="contenedor operacion">
-          <h3>Frecuencias</h3>
-          <div id="frequencies" style="max-height: 200px; overflow-y: auto;"></div>
+          <h3>Detalles</h3>
+          <div id="details" style="max-height: 200px; overflow-y: auto;"></div>
         </div>
       </section>
       <section class="divisor-elem" style="flex: 70%">
         <h2>Visualización del Árbol</h2>
         <div class="graph-container">
-          <h3>Árbol de Huffman</h3>
-          <div id="huffman-tree" class="graph-canvas"></div>
+          <h3 id="tree-title">Árbol Seleccionado</h3>
+          <div id="tree-canvas" class="graph-canvas" style="height: 80vh;"></div>
         </div>
       </section>
     </article>
