@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Operaciones con un Solo Grafo</title>
+    <link
+      rel="icon"
+      href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../estilos/general.css" />
+    <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
+  </head>
+
+  <body>
+    <div class="cabecera">
+      <h1>Operaciones con un Solo Grafo</h1>
+      <button><a href="../grafos/selectou1o2.html">Regresar</a></button>
+    </div>
+    <article class="divisor">
+      <section class="divisor-elem" style="flex: 30%">
+        <h2>Operaciones</h2>
+        <div class="contenedor operacion">
+          <h3>Grafo</h3>
+          <button onclick="addNode()" id="btn-add-node">Agregar Nodo</button>
+          <br /><br />
+          <button onclick="addEdge()" id="btn-add-edge">Agregar Arista</button>
+          <br /><br />
+          <button onclick="deleteNode()" id="btn-delete-node">Eliminar Nodo</button>
+          <br /><br />
+          <button onclick="deleteEdge()" id="btn-delete-edge">Eliminar Arista</button>
+          <br /><br />
+          <button onclick="clearGraph()" id="btn-clear-graph">Limpiar Grafo</button>
+        </div>
+        <div class="contenedor operacion">
+          <h3>Operaciones</h3>
+          <button onclick="performOperation('line')">Grafo Línea</button><br><br>
+          <button onclick="performOperation('complement')">Grafo Complemento</button><br><br>
+          <button onclick="performOperation('vertexFusion')">Fusión de Vértices</button><br><br>
+          <button onclick="performOperation('edgeContraction')">Contracción de Aristas</button>
+        </div>
+      </section>
+      <section class="divisor-elem" style="flex: 70%">
+        <h2>Estructura del Grafo</h2>
+        
+        <div class="graph-container">
+          <h3>Grafo</h3>
+          <div id="graph" class="graph-canvas"></div>
+        </div>
+        
+        <div class="graph-container">
+          <h3>Resultado</h3>
+          <div id="result" class="graph-canvas"></div>
+        </div>
+      </section>
+    </article>
+
+    <script src="operaciones1grafo.js"></script>
+  </body>
+</html>
