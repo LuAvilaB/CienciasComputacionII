@@ -2,8 +2,8 @@
 class BinaryTrieNode {
   constructor(bit = '') {
     this.bit = bit; // El bit actual (0 o 1)
-    this.left = null; // Ahora 1 (arriba)
-    this.right = null; // Ahora 0 (abajo)
+    this.left = null; // 0 (izquierda)
+    this.right = null; // 1 (derecha)
     this.isEnd = false; // Si es el final de una letra
     this.letter = null; // La letra asociada (si es final)
   }
@@ -26,7 +26,7 @@ function getRelevantBits(letter) {
   return binary.slice(3); // Ignorar primeros 3 bits, tomar los 5 siguientes (últimos 5)
 }
 
-// Función para insertar una letra en el Trie Binario (invertido: 1 izquierda/arriba, 0 derecha/abajo)
+// Función para insertar una letra en el Trie Binario (invertido: 1 izquierda/arriba, 0 derecha/abajo) - Para digital
 function insertIntoDigitalTree(root, letter) {
   const bits = getRelevantBits(letter);
   if (!root.letter) {
@@ -53,24 +53,157 @@ function insertIntoDigitalTree(root, letter) {
   }
   // Si llega aquí, no insertar (no debería suceder según las reglas)
 }
+class QuadTrieNode {
+  constructor() {
+    this.children = [null, null, null, null]; // 0:00, 1:01, 2:10, 3:11
+    this.isEnd = false; // Si es el final de una letra (solo en nivel 3)
+    this.letter = null; // La letra asociada (si es final)
+  }
+}
+function getSixBits(letter) {
+  const bits5 = getRelevantBits(letter); // 5 bits
+  return '0' + bits5; // 6 bits
+}
+function insertIntoQuadTree(root, letter) {
+  const bits = getSixBits(letter);
+  let node = root;
+  for (let i = 0; i < 3; i++) { // 3 niveles
+    const group = bits.slice(i * 2, i * 2 + 2); // Grupo de 2 bits
+    let index;
+    if (group === '00') index = 0;
+    else if (group === '01') index = 1;
+    else if (group === '10') index = 2;
+    else if (group === '11') index = 3;
+    if (!node.children[index]) {
+      node.children[index] = new QuadTrieNode();
+    }
+    node = node.children[index];
+  }
+  node.isEnd = true;
+  node.letter = letter;
+}
+function fillEmptyNodes(node, level) {
+  if (level === 3) return; // Nivel de hojas, no rellenar más
+  for (let i = 0; i < 4; i++) {
+    if (!node.children[i]) {
+      node.children[i] = new QuadTrieNode();
+    }
+    fillEmptyNodes(node.children[i], level + 1);
+  }
+}
+function buildMultiResidualQuadTree(text) {
+  const root = new QuadTrieNode();
+  for (let char of text) {
+    if (char !== ' ') {
+      insertIntoQuadTree(root, char);
+    }
+  }
+  // Rellenar nodos vacíos para visualización completa
+  fillEmptyNodes(root, 0);
+  return root;
+}
+function quadTrieToCytoscapeElements(node, parentId = null, elements = [], idCounter = { value: 0 }, level = 0) {
+  if (!node) return elements;
+  const nodeId = `node-${idCounter.value++}`;
+  const label = node.isEnd ? `${node.letter}` : ''; // Solo mostrar letra en hojas finales
+  const classes = node.isEnd ? 'leaf' : 'internal';
+  elements.push({ data: { id: nodeId, label: label }, classes: classes });
+  if (parentId) {
+    elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId } });
+  }
+  // Recorrer los 4 hijos (incluso si están vacíos, ya que fillEmptyNodes los creó)
+  const branchLabels = ['00', '01', '10', '11'];
+  for (let i = 0; i < 4; i++) {
+    if (node.children[i]) {
+      quadTrieToCytoscapeElements(node.children[i], nodeId, elements, idCounter, level + 1);
+    }
+  }
+  return elements;
+}
+// Nueva función para insertar en el árbol residual (corregida para manejar colisiones)
+function insertIntoResidualTree(root, letter) {
+  const bits = getRelevantBits(letter);
+  let node = root;
+  for (let i = 0; i < bits.length; i++) {
+    const bit = bits[i];
+    let child = bit === '0' ? node.left : node.right;
+    if (!child) {
+      // Crear hijo y colocar la letra aquí (hoja libre)
+      child = new BinaryTrieNode(bit);
+      if (bit === '0') node.left = child;
+      else node.right = child;
+      child.isEnd = true;
+      child.letter = letter;
+      return;
+    } else if (child.isEnd && child.letter !== letter) {
+      // Colisión: bajar un nivel completo en este nodo
+      if (!child.left) child.left = new BinaryTrieNode('0');
+      if (!child.right) child.right = new BinaryTrieNode('1');
+      const existingLetter = child.letter;
+      child.isEnd = false;
+      child.letter = null;
+      // Reinsertar la letra existente y la nueva desde el siguiente bit
+      insertFromNode(child, existingLetter, i + 1);
+      insertFromNode(child, letter, i + 1);
+      return;
+    } else {
+      // Continuar bajando
+      node = child;
+    }
+  }
+  // Si llega aquí sin colocar, colocar en el nodo actual (no debería suceder con las reglas)
+  if (!node.isEnd) {
+    node.isEnd = true;
+    node.letter = letter;
+  }
+}
+
+// Función auxiliar para insertar desde un nodo con bitIndex dado
+function insertFromNode(node, letter, startIndex) {
+  const bits = getRelevantBits(letter);
+  let current = node;
+  for (let i = startIndex; i < bits.length; i++) {
+    const bit = bits[i];
+    let child = bit === '0' ? current.left : current.right;
+    if (!child) {
+      // Crear hijo y colocar la letra aquí (primer lugar libre)
+      child = new BinaryTrieNode(bit);
+      if (bit === '0') current.left = child;
+      else current.right = child;
+      child.isEnd = true;
+      child.letter = letter;
+      return;
+    }
+    current = child;
+  }
+  // Si llega al final sin colocar, colocar en el nodo actual (no debería suceder con las reglas)
+  if (!current.isEnd) {
+    current.isEnd = true;
+    current.letter = letter;
+  }
+}
 
 // Función para construir el Trie Binario para Residuos (simple inserción)
-function buildResidualBinaryTrie(text) {
+function buildResidualTree(text) {
   const root = new BinaryTrieNode();
   for (let char of text) {
-    insertIntoBinaryTrie(root, char);
+    if (char !== ' ') {
+      insertIntoResidualTree(root, char);
+    }
   }
   return root;
 }
 
-// Función para construir el Trie Binario para Residuos Múltiples (inserción iterativa, simulando "residuos")
+// Función para construir el Trie Binario para Residuos Múltiples (inserción iterativa, simulando "residuos") - Corregido: usa insertIntoDigitalTree
 function buildMultiResidualBinaryTrie(text) {
   const root = new BinaryTrieNode();
   // Simular residuos: procesar el texto en bloques o iterativamente (ej. invertir o algo simple)
   let processedText = text;
   for (let i = 0; i < 2; i++) { // Dos niveles de "residuos"
     for (let char of processedText) {
-      insertIntoBinaryTrie(root, char);
+      if (char !== ' ') {
+        insertIntoDigitalTree(root, char); // Corregido: era insertIntoBinaryTrie (no definido)
+      }
     }
     processedText = processedText.split('').reverse().join(''); // Simular cambio (puedes ajustar)
   }
@@ -116,13 +249,14 @@ function buildHuffmanTree(text) {
 function binaryTrieToCytoscapeElements(node, parentId = null, elements = [], idCounter = { value: 0 }, path = '') {
   if (!node) return elements;
   const nodeId = `node-${idCounter.value++}`;
-  const label = node.isEnd ? `${node.letter}${path ? `(${path})` : ''}` : path || 'root';
-  elements.push({ data: { id: nodeId, label: label } });
+  const label = node.isEnd ? `${node.letter}(${path})` : '';
+  const classes = node.isEnd ? 'leaf' : 'internal';
+  elements.push({ data: { id: nodeId, label: label }, classes: classes });
   if (parentId) {
     elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId } });
   }
-  binaryTrieToCytoscapeElements(node.left, nodeId, elements, idCounter, path + '0'); // 0 izquierda
-  binaryTrieToCytoscapeElements(node.right, nodeId, elements, idCounter, path + '1'); // 1 derecha
+  binaryTrieToCytoscapeElements(node.left, nodeId, elements, idCounter, path + '0'); // left = 0
+  binaryTrieToCytoscapeElements(node.right, nodeId, elements, idCounter, path + '1'); // right = 1
   return elements;
 }
 
@@ -149,30 +283,37 @@ document.addEventListener('DOMContentLoaded', function() {
     container: document.getElementById('tree-canvas'),
     elements: [],
     style: [
-      {
-        selector: 'node',
-        style: {
-          'background-color': '#8c5d51',
-          'label': 'data(label)',
-          'text-valign': 'center',
-          'text-halign': 'center',
-          'color': '#fff',
-          'font-size': '10px',
-          'width': 40,
-          'height': 40
-        }
-      },
-      {
-        selector: 'edge',
-        style: {
-          'width': 2,
-          'line-color': '#333',
-          'target-arrow-color': '#333',
-          'target-arrow-shape': 'triangle',
-          'curve-style': 'bezier'
-        }
-      }
-    ],
+  {
+    selector: 'node',
+    style: {
+      'background-color': '#8c5d51',
+      'label': 'data(label)',
+      'text-valign': 'center',
+      'text-halign': 'center',
+      'color': '#fff',
+      'font-size': '10px',
+      'width': 40,
+      'height': 40,
+      'shape': 'ellipse' // default circle for internal nodes
+    }
+  },
+  {
+    selector: 'node.leaf', // Solo nodos hoja
+    style: {
+      'shape': 'rectangle' // square for leaves
+    }
+  },
+  {
+    selector: 'edge',
+    style: {
+      'width': 2,
+      'line-color': '#333',
+      'target-arrow-color': '#333',
+      'target-arrow-shape': 'triangle',
+      'curve-style': 'bezier'
+    }
+  }
+],
     layout: {
       name: 'dagre',
       rankDir: 'TB', // Top to Bottom: raíz arriba, hojas abajo
@@ -214,21 +355,21 @@ function generateTree() {
     }
     elements = huffmanTreeToCytoscapeElements(root);
   } else if (type === 'residual') {
-    title.textContent = 'Árbol de Residuos (Binario)';
-    root = buildResidualBinaryTrie(input);
-    detailsDiv.innerHTML = '<h4>Bits procesados:</h4>';
-    for (let char of input) {
-      detailsDiv.innerHTML += `<p>${char}: ${getRelevantBits(char)}</p>`;
-    }
-    elements = binaryTrieToCytoscapeElements(root);
+  title.textContent = 'Árbol de Residuos';
+  root = buildResidualTree(input);
+  detailsDiv.innerHTML = '<h4>Binario de 5 dígitos:</h4>';
+  for (let char of input.replace(/\s/g, '')) {
+    detailsDiv.innerHTML += `<p>${char}: ${getRelevantBits(char)}</p>`;
+  }
+  elements = binaryTrieToCytoscapeElements(root);
   } else if (type === 'multi-residual') {
-    title.textContent = 'Árbol de Residuos Múltiples (Binario)';
-    root = buildMultiResidualBinaryTrie(input);
-    detailsDiv.innerHTML = '<h4>Bits procesados (con residuos simulados):</h4>';
-    for (let char of input) {
-      detailsDiv.innerHTML += `<p>${char}: ${getRelevantBits(char)}</p>`;
+    title.textContent = 'Árbol de Residuos Múltiples (4-ario)';
+    root = buildMultiResidualQuadTree(input);
+    detailsDiv.innerHTML = '<h4>Códigos de 6 bits (con 0 antepuesto):</h4>';
+    for (let char of input.replace(/\s/g, '')) {
+      detailsDiv.innerHTML += `<p>${char}: ${getSixBits(char)}</p>`;
     }
-    elements = binaryTrieToCytoscapeElements(root);
+    elements = quadTrieToCytoscapeElements(root);
   } else if (type === 'digital') {
   title.textContent = 'Árbol Digital';
   root = buildDigitalBinaryTrie(input);
