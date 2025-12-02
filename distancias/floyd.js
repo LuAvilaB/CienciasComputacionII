@@ -39,13 +39,19 @@ const createGraphStyle = () => {
                 'width': 3,
                 'line-color': operationColors.existingEdge,
                 'target-arrow-color': operationColors.existingEdge,
-                'target-arrow-shape': 'none',  // Undirected
+                'target-arrow-shape': 'triangle',  // Cambiado a 'triangle' para flechas dirigidas
                 'curve-style': 'bezier',
                 'label': 'data(label)',
                 'color': themeColors.nodeText,
                 'text-background-color': operationColors.inputNode,
                 'text-background-opacity': 0.7,
                 'text-background-padding': '3px'
+            }
+        },
+        {
+            selector: 'core',
+            style: {
+                'background-color': themeColors.graphBackground
             }
         }
     ];
@@ -89,7 +95,7 @@ function fitGraphToContainer() {
 
 // Add initial graph for testing
 function addInitialGraph() {
-    // Initial graph - Triangle with weights
+    // Initial graph - Triangle with directed edges and weights
     cyInput.add([
         { data: { id: 'A', label: 'A', graph: 'input' } },
         { data: { id: 'B', label: 'B', graph: 'input' } },
@@ -159,24 +165,13 @@ function addEdge() {
         const targetNode = nodes.find(n => n.data('label') === targetLabel);
         
         if (sourceNode && targetNode) {
-            const existingEdge = cyInput.edges().find(edge => 
-                (edge.data('source') === sourceNode.id() && 
-                 edge.data('target') === targetNode.id()) ||
-                (edge.data('source') === targetNode.id() && 
-                 edge.data('target') === sourceNode.id())
-            );
-            
-            if (existingEdge) {
-                alert('Esta arista ya existe (o su inversa).');
-                return;
-            }
-            
-            const edgeId = `e${++edgeId}`;
+            // Quita la verificación de aristas existentes para permitir múltiples dirigidas
+            const newEdgeId = `e${++edgeId}`;
             const edgeLabel = `${sourceLabel}${targetLabel}:${weight}`;
             
             cyInput.add({ 
                 data: { 
-                    id: edgeId, 
+                    id: newEdgeId, 
                     source: sourceNode.id(), 
                     target: targetNode.id(),
                     label: edgeLabel,
@@ -224,17 +219,15 @@ function deleteEdge() {
     
     if (sourceLabel && targetLabel) {
         const edge = cyInput.edges().find(e => 
-            (cyInput.getElementById(e.data('source')).data('label') === sourceLabel && 
-             cyInput.getElementById(e.data('target')).data('label') === targetLabel) ||
-            (cyInput.getElementById(e.data('source')).data('label') === targetLabel && 
-             cyInput.getElementById(e.data('target')).data('label') === sourceLabel)
+            cyInput.getElementById(e.data('source')).data('label') === sourceLabel && 
+            cyInput.getElementById(e.data('target')).data('label') === targetLabel
         );
         
         if (edge) {
             cyInput.remove(edge);
             applyLayout(cyInput);
         } else {
-            alert('Arista no encontrada.');
+            alert('Arista no encontrada en esa dirección.');
         }
     }
 }
@@ -291,14 +284,12 @@ function performFloydWarshall() {
         dist[i][i] = 0;
     });
     
-    // Fill initial distances
+    // Fill initial distances (solo en la dirección de la arista, no simétrica)
     edges.forEach(edge => {
         const i = nodeIndex[edge.sourceLabel];
         const j = nodeIndex[edge.targetLabel];
         dist[i][j] = edge.weight;
-        dist[j][i] = edge.weight; // Undirected graph
         next[i][j] = j;
-        next[j][i] = i;
     });
     
     // Floyd-Warshall algorithm
