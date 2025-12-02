@@ -100,9 +100,11 @@ function addInitialGraph() {
         { data: { id: 'A', label: 'A', graph: 'input' } },
         { data: { id: 'B', label: 'B', graph: 'input' } },
         { data: { id: 'C', label: 'C', graph: 'input' } },
-        { data: { id: 'AB', source: 'A', target: 'B', label: 'AB:2', weight: 2, graph: 'input' } },
-        { data: { id: 'BC', source: 'B', target: 'C', label: 'BC:3', weight: 3, graph: 'input' } },
-        { data: { id: 'CA', source: 'C', target: 'A', label: 'CA:4', weight: 4, graph: 'input' } }
+        { data: { id: 'D', label: 'D', graph: 'input' } },
+        { data: { id: 'AB', source: 'A', target: 'B', label: 'AB:1', weight: 1, graph: 'input' } },
+        { data: { id: 'BC', source: 'B', target: 'C', label: 'BC:1', weight: 1, graph: 'input' } },
+        { data: { id: 'CA', source: 'C', target: 'A', label: 'CA:1', weight: 1, graph: 'input' } },
+        { data: { id: 'CD', source: 'C', target: 'D', label: 'CD:1', weight: 1, graph: 'input' } }
     ]);
     
     // Apply layout
