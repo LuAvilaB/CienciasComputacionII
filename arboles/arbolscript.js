@@ -120,45 +120,53 @@ function quadTrieToCytoscapeElements(node, parentId = null, elements = [], idCou
   }
   return elements;
 }
-// Nueva función para insertar en el árbol residual (corregida para manejar colisiones)
+// Nueva función para insertar en el árbol residual (corregida para manejar colisiones y colocar en hojas vacías)
 function insertIntoResidualTree(root, letter) {
   const bits = getRelevantBits(letter);
   let node = root;
-  for (let i = 0; i < bits.length; i++) {
-    const bit = bits[i];
-    let child = bit === '0' ? node.left : node.right;
-    if (!child) {
-      // Crear hijo y colocar la letra aquí (hoja libre)
-      child = new BinaryTrieNode(bit);
-      if (bit === '0') node.left = child;
-      else node.right = child;
-      child.isEnd = true;
-      child.letter = letter;
+  let bitIndex = 0;
+  while (bitIndex < bits.length) {
+    const bit = bits[bitIndex];
+    let nextNode = bit === '0' ? node.left : node.right;
+    if (!nextNode) {
+      // Crear hijo y colocar la letra aquí si es hoja vacía
+      nextNode = new BinaryTrieNode(bit);
+      if (bit === '0') node.left = nextNode;
+      else node.right = nextNode;
+      nextNode.isEnd = true;
+      nextNode.letter = letter;
       return;
-    } else if (child.isEnd && child.letter !== letter) {
-      // Colisión: bajar un nivel completo en este nodo
-      if (!child.left) child.left = new BinaryTrieNode('0');
-      if (!child.right) child.right = new BinaryTrieNode('1');
-      const existingLetter = child.letter;
-      child.isEnd = false;
-      child.letter = null;
-      // Reinsertar la letra existente y la nueva desde el siguiente bit
-      insertFromNode(child, existingLetter, i + 1);
-      insertFromNode(child, letter, i + 1);
-      return;
+    } else if (nextNode.isEnd) {
+      if (nextNode.letter) {
+        // Colisión: bajar un nivel completo en este nodo
+        if (!nextNode.left) nextNode.left = new BinaryTrieNode('0');
+        if (!nextNode.right) nextNode.right = new BinaryTrieNode('1');
+        const existingLetter = nextNode.letter;
+        nextNode.isEnd = false;
+        nextNode.letter = null;
+        // Reinsertar la letra existente y la nueva desde el siguiente bit
+        insertFromNode(nextNode, existingLetter, bitIndex + 1);
+        insertFromNode(nextNode, letter, bitIndex + 1);
+        return;
+      } else {
+        // Hoja vacía, colocar la letra aquí
+        nextNode.letter = letter;
+        return;
+      }
     } else {
       // Continuar bajando
-      node = child;
+      node = nextNode;
+      bitIndex++;
     }
   }
-  // Si llega aquí sin colocar, colocar en el nodo actual (no debería suceder con las reglas)
+  // Si llega aquí sin colocar, colocar en el nodo actual si es hoja vacía
   if (!node.isEnd) {
     node.isEnd = true;
     node.letter = letter;
   }
 }
 
-// Función auxiliar para insertar desde un nodo con bitIndex dado
+// Función auxiliar para insertar desde un nodo con bitIndex dado (corregida para colocar en hojas vacías)
 function insertFromNode(node, letter, startIndex) {
   const bits = getRelevantBits(letter);
   let current = node;
@@ -166,17 +174,36 @@ function insertFromNode(node, letter, startIndex) {
     const bit = bits[i];
     let child = bit === '0' ? current.left : current.right;
     if (!child) {
-      // Crear hijo y colocar la letra aquí (primer lugar libre)
+      // Crear hijo y colocar la letra aquí si es hoja vacía
       child = new BinaryTrieNode(bit);
       if (bit === '0') current.left = child;
       else current.right = child;
       child.isEnd = true;
       child.letter = letter;
       return;
+    } else if (child.isEnd) {
+      if (child.letter) {
+        // Colisión: bajar nivel
+        if (!child.left) child.left = new BinaryTrieNode('0');
+        if (!child.right) child.right = new BinaryTrieNode('1');
+        const existingLetter = child.letter;
+        child.isEnd = false;
+        child.letter = null;
+        // Reinsertar desde siguiente bit
+        insertFromNode(child, existingLetter, i + 1);
+        insertFromNode(child, letter, i + 1);
+        return;
+      } else {
+        // Hoja vacía, colocar
+        child.letter = letter;
+        return;
+      }
+    } else {
+      // Nodo interno, continuar
+      current = child;
     }
-    current = child;
   }
-  // Si llega al final sin colocar, colocar en el nodo actual (no debería suceder con las reglas)
+  // Si llega al final sin colocar, colocar en el nodo actual si es hoja vacía
   if (!current.isEnd) {
     current.isEnd = true;
     current.letter = letter;
