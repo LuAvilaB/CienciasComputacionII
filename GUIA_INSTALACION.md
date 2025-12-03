@@ -197,16 +197,16 @@ node --version
 # Visita https://nodejs.org/
 ```
 
-### Problema: "firebase: command not found"
+### Si ves "firebase: command not found" (nota)
 
-**Causa**: Firebase CLI no está instalado
+**Causa**: Firebase CLI no está instalado — esto solo aplica si intentas usar la CLI de Firebase.
 
-**Solución**:
+**Solución / Nota**:
 ```bash
-# No necesitas Firebase CLI para ejecución local
-# El proyecto corre directamente en navegador
+# No necesitas Firebase CLI para ejecutar o desarrollar el proyecto localmente.
+# Simplemente abra `public/inicio.html` o use Live Server / http-server.
 
-# Si quieres instalar http-server:
+# Si por alguna razón desea instalar http-server (opcional):
 npm install -g http-server
 ```
 

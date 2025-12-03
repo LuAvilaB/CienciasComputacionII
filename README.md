@@ -77,7 +77,7 @@ CienciasComputacionII/
 ├── estilos/             # CSS global
 ├── MANUAL_TECNICO.md    # Documentación técnica
 ├── MANUAL_USUARIO.md    # Manual de usuario
-└── firebase.json        # Configuración (no se utiliza)
+└── firebase.json        # Configuración (preservada para historial, no requerida)
 ```
 
 ---
@@ -122,7 +122,7 @@ CienciasComputacionII/
 1. Lee [MANUAL_TECNICO.md](./MANUAL_TECNICO.md) sección "Guía de Desarrollo"
 2. Instala dependencias: `npm install`
 3. Modifica según necesidad
-4. Despliega con `firebase deploy`
+4. Ejecuta localmente (Live Server / http-server) o publica con hosting estático (GitHub Pages, Netlify)
 
 ---
 

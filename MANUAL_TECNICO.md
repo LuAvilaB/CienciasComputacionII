@@ -76,6 +76,7 @@ CienciasComputacionII/
 │   ├── funciones_hash.html     # Menú de funciones hash
 │   ├── hash_modulo.html        # Función hash: módulo
 │   ├── hash_cuadrado.html      # Función hash: cuadrado medio
+│   ├── hash_doble.html         # Función hash: doble hashing
 │   ├── hash_plegamiento.html   # Función hash: plegamiento
 │   ├── hash_truncamiento.html  # Función hash: truncamiento
 │   ├── busquedas_binaria_interna.html
@@ -119,18 +120,20 @@ CienciasComputacionII/
 │
 ├── funciones/                   # Funciones reutilizables
 │   ├── arreglo.js              # Clase Estructura (arrays)
-│   ├── hash.js                 # Funciones hash
+│   ├── hash.js                 # Funciones hash (módulos, plegamiento, truncamiento)
 │   ├── control.js              # Controlador de eventos
+│   ├── control_hash_doble.js   # Control y UI para hash doble
+│   ├── hashtable.js            # Implementación de tablas hash y manejo de colisiones
 │   └── [otras funciones]
 │
 ├── estilos/                     # Estilos CSS
 │   └── general.css             # Hoja de estilos global
 │
-├── firebase.json               # Configuración (no se utiliza)
+├── test_hash.js               # Script de pruebas/ejemplos para funciones hash
 ├── package.json                # Dependencias del proyecto
 ├── package-lock.json           # Lock file de dependencias
 ├── README.md                   # Documentación base
-└── .firebaserc                 # Configuración (no se utiliza)
+└── firebase.json               # Configuración (preservada para historial, no requerida)
 ```
 
 ---
@@ -164,32 +167,22 @@ npm install
 
 ## Configuración
 
-### Firebase Configuration (firebase.json)
-```json
-{
-  "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ]
-  }
-}
-```
+### Despliegue y Hosting
 
-**Detalles:**
-- **public**: Carpeta que será servida por Firebase Hosting
-- **ignore**: Archivos/carpetas que no se subirán al hosting
+El proyecto está pensado para ejecutarse localmente en el navegador. No se requiere Firebase ni ninguna CLI para su uso.
 
-### Despliegue
+Opciones recomendadas para servir la carpeta `public`:
+
+- **Live Server (VS Code)** — Recomendado para desarrollo. Haga click derecho en `public/inicio.html` → "Open with Live Server".
+- **http-server (Node.js)** — Servir archivos estáticos:
+
 ```bash
-# Login a Firebase
-firebase login
-
-# Desplegar
-firebase deploy
+npm install -g http-server
+http-server public
+# Abrir http://localhost:8080
 ```
+
+Si desea publicar en la web, puede usar cualquier servicio de hosting estático (GitHub Pages, Netlify, Vercel). No hay dependencias obligatorias de Firebase en la ejecución local.
 
 ---
 

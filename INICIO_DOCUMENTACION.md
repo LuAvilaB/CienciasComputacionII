@@ -34,7 +34,7 @@
 │  └─ Instalación y despliegue paso a paso
 │     Público: Desarrolladores, Administradores
 │     Tiempo: 20-30 minutos
-│     Temas: Node.js, Firebase, Local, Troubleshooting
+│     Temas: Node.js, Local, Troubleshooting (hosting opcional)
 │
 └─ 📝 DOCUMENTACION_CREADA.md (ESTE ARCHIVO)
    └─ Resumen de documentación creada
@@ -111,7 +111,7 @@
 - [x] Requisitos del sistema
 - [x] Instalación Node.js
 - [x] Configuración local
-- [x] Despliegue Firebase
+- [x] Despliegue (hosting estático opcional)
 - [x] Troubleshooting completo
 
 ---
@@ -150,8 +150,8 @@
 ### 🔧 ADMINISTRADORES
 ```
 ✅ Instalación paso a paso
-✅ Configuración Firebase
-✅ Despliegue
+✅ Configuración local
+✅ Despliegue (hosting estático opcional)
 ✅ Troubleshooting de infra
 ```
 
@@ -326,7 +326,7 @@
 ✓ 7 secciones
 ✓ Paso a paso Node.js
 ✓ 3 opciones de ejecución
-✓ Despliegue Firebase
+✓ Despliegue (opcional, hosting estático)
 ✓ 10 soluciones de problemas
 ✓ Checklist de instalación
 ✓ Desarrollo con emulador
@@ -344,8 +344,7 @@ https://github.com/LuAvilaB/CienciasComputacionII
 
 ### Desde la Plataforma Online
 ```
-Próximamente en:
-https://cienciascomputacionii.firebaseapp.com/
+No hay una URL pública desplegada oficialmente. Para uso local, abra `public/inicio.html` o use Live Server / http-server.
 ```
 
 ### Localmente

@@ -400,7 +400,7 @@ https://github.com/LuAvilaB/CienciasComputacionII
 ### En GUIA_INSTALACION.md
 - 3 opciones de ejecución
 - 10+ soluciones de problemas
-- Emulador Firebase
+- Emulador local / opciones de emulación (opcional)
 - Debug con DevTools
 - Configuración avanzada
 - Checklist de instalación

@@ -144,6 +144,7 @@ BÚSQUEDAS
 ├── Funciones Hash
 │   ├── Hash - Módulo
 │   ├── Hash - Cuadrado
+│   ├── Hash - Doble
 │   ├── Hash - Truncamiento
 │   └── Hash - Plegamiento
 ├── Búsquedas Externas
@@ -267,6 +268,30 @@ Clave (123) ──[Función Hash]──> Posición (5)
 **Ventaja**: Mejor distribución que módulo
 
 ---
+
+#### Hash - Doble
+
+También conocido como "double hashing", es una técnica para resolver colisiones donde se aplican dos funciones hash diferentes. Si la primera posición está ocupada, se calcula un desplazamiento usando la segunda función y se intenta la nueva posición.
+
+**Fórmula general**:
+```
+pos = (h1(key) + i * h2(key)) % m
+```
+donde `i` es el intento (0,1,2,...), `m` el tamaño de la tabla, `h1` y `h2` son funciones hash diferentes.
+
+**Ventaja**: Reduce clustering primario y mejora la distribución en comparación con el sondeo lineal.
+
+**Ejemplo**:
+- `h1(key) = key % m`
+- `h2(key) = 1 + (key % (m-1))`
+
+Si `m = 10` y `key = 25`:
+- `h1(25) = 5` → intenta posición 5
+- si está ocupada, `h2(25) = 1 + (25 % 9) = 1 + 7 = 8`
+- siguiente intento: `(5 + 1*8) % 10 = 3`
+
+En esta plataforma hay una implementación complementaria llamada `hash_doble.html` y utilidades en `funciones/control_hash_doble.js` y `funciones/hashtable.js` para experimentar con doble hashing.
+
 
 #### Hash - Plegamiento
 

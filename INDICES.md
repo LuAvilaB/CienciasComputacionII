@@ -166,8 +166,8 @@
   - Node.js
   - Descargar proyecto
   - npm install
-- Configuración local (Live Server, http-server)
-- Despliegue Firebase paso a paso
+    - Configuración local (Live Server, http-server)
+    - Despliegue (opcional, hosting estático)
 - Actualizar despliegue
 - Configuración avanzada
 - Desarrollo local con emulador
@@ -175,7 +175,7 @@
 - Troubleshooting detallado
 - Checklist de instalación exitosa
 
-**Cuándo usarlo**: Para instalar localmente o desplegar en Firebase
+**Cuándo usarlo**: Para instalar localmente o desplegar (opcional, hosting estático)
 
 ---
 
@@ -222,8 +222,8 @@ GRAFOS
 INSTALACIÓN/DESPLIEGUE
 ├── Instalación local
 │   └─ GUIA_INSTALACION.md → Configuración Local
-├── Despliegue Firebase
-│   └─ GUIA_INSTALACION.md → Despliegue en Firebase
+├── Despliegue (opcional)
+│   └─ GUIA_INSTALACION.md → Despliegue (opcional, hosting estático)
 └── Problemas
     └─ GUIA_INSTALACION.md → Troubleshooting
 ```
@@ -287,7 +287,7 @@ INSTALACIÓN/DESPLIEGUE
 - Descargar proyecto → [GUIA_INSTALACION.md](./GUIA_INSTALACION.md#2-descargar-proyecto)
 - Instalar dependencias → [GUIA_INSTALACION.md](./GUIA_INSTALACION.md#3-instalar-dependencias)
 - Ejecutar localmente → [GUIA_INSTALACION.md](./GUIA_INSTALACION.md#configuración-local)
-- Desplegar Firebase → [GUIA_INSTALACION.md](./GUIA_INSTALACION.md#despliegue-en-firebase)
+- Desplegar (opcional) → [GUIA_INSTALACION.md](./GUIA_INSTALACION.md#despliegue-en-firebase)
 
 ### Problemas
 - Error en navegador → [MANUAL_TECNICO.md](./MANUAL_TECNICO.md#troubleshooting)
@@ -349,7 +349,7 @@ INSTALACIÓN/DESPLIEGUE
 | Aprender grafos | MANUAL_USUARIO.md § Grafos | 30 min |
 | Agregar un módulo | MANUAL_TECNICO.md § Guía Desarrollo | 1 hora |
 | Instalar localmente | GUIA_INSTALACION.md § Instalación | 20 min |
-| Desplegar en Firebase | GUIA_INSTALACION.md § Despliegue | 15 min |
+| Desplegar (opcional) | GUIA_INSTALACION.md § Despliegue | 15 min |
 | Resolver problema | Troubleshooting en MANUAL_TECNICO.md | 10 min |
 | Resolver problema usuario | FAQ en MANUAL_USUARIO.md | 10 min |
 | Resolver problema instalación | Troubleshooting en GUIA_INSTALACION.md | 10 min |

@@ -19,7 +19,7 @@
 2. 📁 Explora la estructura de carpetas
 3. 💻 Instala: `npm install`
 4. ✏️ Modifica según necesidad
-5. 🚀 Despliega: `firebase deploy`
+5. 🚀 Despliega (opcional): publica los archivos estáticos en GitHub Pages, Netlify o Vercel
 
 ---
 
@@ -117,7 +117,7 @@ O usa Live Server en VS Code:
 
 ---
 
-## 🚀 Despliegue en 3 pasos
+## 🚀 Despliegue en 3 pasos (opcional)
 
 ```bash
 # El proyecto corre localmente, no necesita despliegue
