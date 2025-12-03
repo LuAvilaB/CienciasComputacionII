@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Árboles como Grafos</title>
+    <link
+      rel="icon"
+      href="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Escudo_UD.svg/248px-Escudo_UD.svg.png"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="../estilos/general.css" />
+    <script src="https://unpkg.com/cytoscape@3.23.0/dist/cytoscape.min.js"></script>
+    <style>
+      .matrix-container {
+        font-family: monospace;
+        white-space: pre;
+        overflow-x: auto;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+      .info-panel {
+        margin-top: 20px;
+        padding: 15px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+      }
+      .highlighted-row {
+        background-color: rgba(255, 255, 0, 0.2);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="cabecera">
+     <h1>Árboles como Grafos</h1>
+    <button><a href="arboles_grafos.html">Regresar</a></button>   
+    </div>
+    <article class="divisor">
+      <section class="divisor-elem" style="flex: 25%">
+        <h2>Operaciones</h2>
+        <div class="contenedor operacion">
+          <h3>Edición del Grafo</h3>
+          <button onclick="addNode()" id="btn-add-node">Agregar Nodo</button>
+          <br /><br />
+          <button onclick="addEdge()" id="btn-add-edge">Agregar Arista (con Peso)</button>
+          <br /><br />
+          <button onclick="deleteNode()" id="btn-delete-node">Eliminar Nodo</button>
+          <br /><br />
+          <button onclick="deleteEdge()" id="btn-delete-edge">Eliminar Arista</button>
+          <br /><br />
+          <button onclick="clearGraph()" id="btn-clear-graph">Limpiar Grafo</button>
+        </div>
+        <div class="contenedor operacion">
+          <h3>Análisis</h3>
+          <button onclick="calculateMST()">Árbol Generador Mínimo</button><br><br>
+          <button onclick="showCircuits()">Circuitos</button><br><br>
+          <button onclick="showFundamentalCircuits()">Circuitos Fundamentales</button><br><br>
+          <button onclick="showCutSets()">Conjuntos de Corte</button><br><br>
+          <button onclick="showFundamentalCutSets()">Cortes Fundamentales</button>
+        </div>
+        <div id="stats-panel" class="info-panel" style="display: none;">
+            <h3>Propiedades</h3>
+            <p id="stats-content"></p>
+        </div>
+      </section>
+      <section class="divisor-elem" style="flex: 75%">
+        <h2>Visualización</h2>
+        
+        <div class="graph-container">
+          <h3>Grafo Original / Árbol Generador</h3>
+          <div id="graph" class="graph-canvas" style="height: 500px;"></div>
+        </div>
+        
+        <div id="matrix-section" class="graph-container" style="display: none;">
+          <h3 id="matrix-title">Matriz</h3>
+          <div id="matrix-content" class="matrix-container"></div>
+        </div>
+      </section>
+    </article>
+
+    <script src="arboles_como_grafos.js"></script>
+  </body>
+</html>
