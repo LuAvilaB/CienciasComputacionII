@@ -32,11 +32,6 @@
 
 ## 🚀 Inicio Rápido
 
-### Acceso Online
-```
-https://cienciascomputacionii.firebaseapp.com/
-```
-
 ### Desarrollo Local
 ```bash
 # Clonar repositorio
@@ -55,7 +50,6 @@ npm install
 
 - **Frontend**: HTML5, CSS3, JavaScript Vanilla
 - **Visualización**: Cytoscape.js v3.33.1
-- **Hosting**: Firebase Hosting
 - **Control de Versiones**: Git
 
 ---
@@ -220,7 +214,7 @@ Este proyecto es educativo y está disponible bajo licencia MIT.
 
 ## 👥 Autores
 
-Desarrollado por: Equipo CienciasComputacionII
+Desarrollado por: Lucia Avila Bermudez y Juan Contreras
 Universidad Distrital
 
 ---
