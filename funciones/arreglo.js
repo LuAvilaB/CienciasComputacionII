@@ -22,8 +22,8 @@ class Estructura {
             this.array[ind] = elem;
         }
         else{
-            if(typeof(this.array[ind]) == 'object'){
-                typeof(this.array[ind]).push(elem);
+            if(typeof this.array[ind] == 'object'){
+                this.array[ind].push(elem);
             }
             else {
                 this.array[ind] = [this.array[ind], elem]

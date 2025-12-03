@@ -20,13 +20,10 @@ function control() {
   function formatoEnTabla(valor) {
     if (typeof valor == "object") {
       return valor.join(",");
-    } else {
-      let str = "0".repeat(digsTam) + valor;
-      str = parseInt(str) == valor ? str : valor;
-      return str.substring(str.length - digsTam);
-      return valor.toString();
     }
-    return valor.toString();
+    let str = "0".repeat(digsTam) + valor;
+    str = parseInt(str) == valor ? str : valor;
+    return str.substring(str.length - digsTam);
   }
 
   function inicializarEventos() {
@@ -46,35 +43,45 @@ function control() {
       .addEventListener("click", eventIniciarEstr);
     document
       .querySelector("#btn-agregar-clave")
-      .addEventListener("click", eventAgregarClave);
+      ?.addEventListener("click", eventAgregarClave);
+    document
+      .querySelector("#btn-eliminar-clave")
+      ?.addEventListener("click", eventEliminarClave);
     document
       .querySelector("#btn-agrega-clave-hash")
-      .addEventListener("click", eventAgregarHash);
+      ?.addEventListener("click", eventAgregarHash);
     document
       .querySelector("#btn-buscar-clave-hash")
-      .addEventListener("click", eventBusqHash);
+      ?.addEventListener("click", eventBusqHash);
     document
       .querySelector("#btn-buscar")
-      .addEventListener("click", eventBusqueda);
+      ?.addEventListener("click", eventBusqueda);
   }
 
   function eventIniciarEstr() {
     let n = parseInt(htmlElements.nInput.value);
+    let tamClave = parseInt(document.querySelector("#i-tam-clave")?.value || n.toString().length);
     htmlElements.avisos.textContent = "";
-    if (n <= 0) {
-      htmlElements.avisos.textContent = "Rango invalido";
-      throw "Rango invalido";
+    if (isNaN(n) || n <= 0) {
+      htmlElements.avisos.textContent = "Tamaño de estructura inválido";
+      throw "Tamaño de estructura inválido";
     } else if (n > 5000) {
-      htmlElements.avisos.textContent = "El rango no puede ser mayor a 5000";
-      throw "El rango no puede ser mayor a 5000";
+      htmlElements.avisos.textContent = "El tamaño de estructura no puede ser mayor a 5000";
+      throw "El tamaño de estructura no puede ser mayor a 5000";
     }
-    let opt = parseInt(htmlElements.memOpt.selectedOptions[0].value);
+    if (isNaN(tamClave) || tamClave <= 0) {
+      htmlElements.avisos.textContent = "Tamaño de clave inválido";
+      throw "Tamaño de clave inválido";
+    }
+    
+    // Leer mem-opt como input hidden con valor directo
+    let opt = parseInt(htmlElements.memOpt?.value || 1);
     if (opt == 2) {
       estructura = new Estructura(n, Math.sqrt(n));
     } else {
       estructura = new Estructura(n);
     }
-    digsTam = n.toString().length;
+    digsTam = tamClave;
     dibujarArreglo();
   }
 
@@ -87,19 +94,104 @@ function control() {
         if (isNaN(valor)) {
           throw "Clave invalida";
         }
-        let nvalor = parseInt(valor.toString().substring(digsTam));
-        valor = isNaN(nvalor) ? valor : nvalor;
-        htmlElements.inputsTabla[estructura.add(valor)].value =
-          formatoEnTabla(valor);
+        // Validar que la clave cumpla con el tamaño especificado
+        let valorStr = valor.toString();
+        if (valorStr.length > digsTam) {
+          throw `La clave debe tener máximo ${digsTam} dígitos`;
+        }
+        
+        // Verificar clave repetida
+        if(estructura.array.indexOf(valor) != -1){
+          throw 'Clave repetida';
+        }
+        
+        // Insertar de forma ordenada
+        let posicion = 0;
+        for(let i = 0; i < estructura.array.length; i++){
+          if(estructura.array[i] !== undefined && estructura.array[i] < valor){
+            posicion = i + 1;
+          } else {
+            break;
+          }
+        }
+        
+        // Insertar en la posición correcta
+        estructura.array.splice(posicion, 0, valor);
+        
+        // Redibujar
+        dibujarArreglo();
+        htmlElements.avisos.textContent = `Clave ${valor} agregada en posición ${posicion + 1}`;
       } catch (e) {
         htmlElements.avisos.textContent = "ERROR: " + e;
       }
+    } else {
+      htmlElements.avisos.textContent = "ERROR: Primero debe inicializar la estructura";
+    }
+  }
+
+  function eventEliminarClave() {
+    if (estructura) {
+      try {
+        let elimClave = document.querySelector("#i-ec");
+        if (!elimClave) {
+          throw "Campo de eliminación no encontrado";
+        }
+        
+        let valor = parseInt(elimClave.value);
+        if (isNaN(valor)) {
+          throw "Clave invalida";
+        }
+        
+        // Buscar la clave en el array
+        let indice = estructura.array.indexOf(valor);
+        if (indice === -1) {
+          throw "Clave no encontrada en la estructura";
+        }
+        
+        // Eliminar la clave
+        estructura.array.splice(indice, 1);
+        
+        // Verificar si es memoria externa (tiene bloques)
+        let optMem = parseInt(htmlElements.memOpt?.selectedOptions ? htmlElements.memOpt.selectedOptions[0].value : htmlElements.memOpt?.value || 1);
+        
+        if (optMem == 2) {
+          // Reestructurar: eliminar undefined/null y mantener bloques
+          estructura.array = estructura.array.filter((e) => e !== undefined && e !== null);
+        }
+        
+        // Redibujar
+        dibujarArreglo();
+        htmlElements.avisos.textContent = `Clave ${valor} eliminada correctamente`;
+      } catch (e) {
+        htmlElements.avisos.textContent = "ERROR: " + e;
+      }
+    } else {
+      htmlElements.avisos.textContent = "ERROR: Primero debe inicializar la estructura";
     }
   }
 
   function eventAgregarHash() {
-    let opt = parseInt(htmlElements.hashOpt.selectedOptions[0].value);
+    if (!estructura) {
+      htmlElements.avisos.textContent = "ERROR: Primero debe inicializar la estructura";
+      return;
+    }
+    
+    // Leer hash-opt correctamente (puede ser select o input hidden)
+    let opt = parseInt(htmlElements.hashOpt?.selectedOptions ? htmlElements.hashOpt.selectedOptions[0].value : htmlElements.hashOpt?.value || 1);
     let clave = parseInt(htmlElements.inputHash.value);
+    
+    if (isNaN(clave)) {
+      htmlElements.avisos.textContent = "ERROR: Clave inválida";
+      return;
+    }
+    
+    // Validar tamaño de clave
+    let claveStr = clave.toString();
+    if (claveStr.length > digsTam) {
+      htmlElements.avisos.textContent = `ERROR: La clave debe tener máximo ${digsTam} dígitos`;
+      return;
+    }
+    
     let hash;
     switch (opt) {
       case 1:
@@ -120,7 +212,8 @@ function control() {
         break;
 
       default:
-        break;
+        htmlElements.avisos.textContent = "ERROR: Función hash no válida";
+        return;
     }
     try {
       estructura.sset(hash, clave);
@@ -134,8 +227,20 @@ function control() {
   }
 
   function eventBusqHash() {
-    let opt = parseInt(htmlElements.hashOpt.selectedOptions[0].value);
+    if (!estructura) {
+      htmlElements.avisos.textContent = "ERROR: Primero debe inicializar la estructura";
+      return;
+    }
+    
+    // Leer hash-opt correctamente (puede ser select o input hidden)
+    let opt = parseInt(htmlElements.hashOpt?.selectedOptions ? htmlElements.hashOpt.selectedOptions[0].value : htmlElements.hashOpt?.value || 1);
     let clave = parseInt(htmlElements.inputHash.value);
+    
+    if (isNaN(clave)) {
+      htmlElements.avisos.textContent = "ERROR: Clave inválida";
+      return;
+    }
+    
     let hash;
     switch (opt) {
       case 1:
@@ -156,8 +261,10 @@ function control() {
         break;
 
       default:
-        break;
+        htmlElements.avisos.textContent = "ERROR: Función hash no válida";
+        return;
     }
+    
     if (
       estructura.array[hash - 1] == undefined ||
       estructura.array[hash - 1] == null
@@ -176,8 +283,9 @@ function control() {
 
   function eventBusqueda() {
     let clave = parseInt(htmlElements.inputBusq.value);
-    let optBusq = parseInt(htmlElements.busqOpt.selectedOptions[0].value);
-    let optMem = parseInt(htmlElements.memOpt.selectedOptions[0].value);
+    // Leer opciones correctamente (pueden ser select o input hidden)
+    let optBusq = parseInt(htmlElements.busqOpt?.selectedOptions ? htmlElements.busqOpt.selectedOptions[0].value : htmlElements.busqOpt?.value || 1);
+    let optMem = parseInt(htmlElements.memOpt?.selectedOptions ? htmlElements.memOpt.selectedOptions[0].value : htmlElements.memOpt?.value || 1);
     let pasos = htmlElements.checkboxVerPasos.checked;
     let t = parseFloat(htmlElements.inputTiempo.value);
     estructura.array = estructura.array.filter((e) => !!e);

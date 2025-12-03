@@ -26,8 +26,12 @@
             <h2>Operaciones</h2>
             <div class="contenedor operacion">
                 <h3>Iniciar estructura</h3>
-                <label for="i-n">Rango: </label>
-                <input class="i-numero" id="i-n" type="number" placeholder="Ingrese la n">
+                <label for="i-n">Tamaño de estructura: </label>
+                <input class="i-numero" id="i-n" type="number" placeholder="Cantidad de elementos">
+                <br><br>
+                <label for="i-tam-clave">Tamaño de clave: </label>
+                <input class="i-numero" id="i-tam-clave" type="number" placeholder="Dígitos de la clave">
+                <br>
                 <button id="btn-iniciar-arr">Iniciar</button>
                 <br>
                 <input type="hidden" id="mem-opt" value="1">
@@ -37,6 +41,12 @@
                 <label for="i-ac">Clave: </label>
                 <input class="i-numero" id="i-ac" type="number" placeholder="Ingrese la clave">
                 <button id="btn-agregar-clave">Agregar</button>
+            </div>
+            <div class="contenedor operacion">
+                <h3>Eliminar clave</h3>
+                <label for="i-ec">Clave: </label>
+                <input class="i-numero" id="i-ec" type="number" placeholder="Clave a eliminar">
+                <button id="btn-eliminar-clave">Eliminar</button>
             </div>
             <div class="contenedor operacion">
                 <h3>Búsqueda Binaria</h3>
