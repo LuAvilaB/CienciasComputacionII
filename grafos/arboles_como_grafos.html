@@ -44,6 +44,8 @@
   <body>
     <div class="cabecera">
      <h1>Árboles como Grafos</h1>
+    <button onclick="handleSave()">💾 Guardar</button>
+    <button onclick="handleLoad()">📂 Recuperar</button>
     <button><a href="arboles_grafos.html">Regresar</a></button>   
     </div>
     <article class="divisor">
@@ -144,6 +146,18 @@
       </section>
     </article>
 
+    <script src="../funciones/saveload.js"></script>
     <script src="arboles_como_grafos.js"></script>
+    <script>
+        function handleSave() {
+            const state = captureGraphState(cy);
+            saveToFile(state, 'arboles_como_grafos', 'arboles_como_grafos.json');
+            clearSimulation('graph');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => restoreGraphState(data, cy));
+        }
+    </script>
   </body>
 </html>

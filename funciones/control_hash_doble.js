@@ -104,6 +104,10 @@ function controlHashDoble() {
 
     // Create hash table with user-specified thresholds
     hashTable = new HashTableWithFunctions(n, hashFunctionType, maxLoadFactor, minLoadFactor, autoReduce);
+    
+    // Actualizar referencia global explícitamente
+    window.estructura = hashTable;
+    
     digsTam = tamClave;
     
     dibujarArreglo();
@@ -241,6 +245,12 @@ function controlHashDoble() {
     htmlElements.tablarArr.innerHTML = filaHeadTemplate;
     htmlElements.inputsTabla = [];
 
+    // Recalcular digsTam si es necesario (ej. al cargar archivo)
+    if (!digsTam) {
+        let n = parseInt(htmlElements.nInput.value);
+        digsTam = parseInt(document.querySelector("#i-tam-clave")?.value || (n ? n.toString().length : 0));
+    }
+
     for (let i = 0; i < hashTable.size; i++) {
       let elem = hashTable.array[i];
       let valor = formatoEnTabla(elem);
@@ -253,6 +263,16 @@ function controlHashDoble() {
       htmlElements.tablarArr.appendChild(fila);
     }
   }
+
+  // Exponer variables y funciones al scope global para saveload.js
+  window.estructura = hashTable;
+  window.dibujarArreglo = dibujarArreglo;
+
+  // Función para actualizar la variable local desde fuera (para cargar estado)
+  window.setEstructura = function(nuevaEstructura) {
+      hashTable = nuevaEstructura;
+      window.estructura = nuevaEstructura;
+  };
 }
 
 /**

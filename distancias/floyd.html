@@ -75,6 +75,8 @@
   <body>
     <div class="cabecera">
      <h1>Floyd</h1>
+    <button onclick="handleSave()">💾 Guardar</button>
+    <button onclick="handleLoad()">📂 Recuperar</button>
     <button><a href="../grafos/arboles_grafos.html">Regresar</a></button>   
     </div>
     <article class="divisor">
@@ -112,6 +114,19 @@
       </section>
     </article>
 
+    <script src="../funciones/saveload.js"></script>
     <script src="floyd.js"></script>
+    <script>
+        function handleSave() {
+            const state = captureGraphState(cy);
+            state.type = 'floyd';
+            saveToFile(state, 'floyd', 'floyd.json');
+            clearSimulation('floyd');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => restoreFloydState(data, cy));
+        }
+    </script>
   </body>
 </html>

@@ -85,6 +85,8 @@
   <body>
     <div class="cabecera">
      <h1>Representación de Grafos</h1>
+    <button onclick="handleSave()">💾 Guardar</button>
+    <button onclick="handleLoad()">📂 Recuperar</button>
     <button><a href="grafos.html">Regresar</a></button>   
     </div>
     <article class="divisor">
@@ -159,6 +161,18 @@
       </section>
     </article>
 
+    <script src="../funciones/saveload.js"></script>
     <script src="representacion_grafo.js"></script>
+    <script>
+        function handleSave() {
+            const state = captureGraphState(cy);
+            saveToFile(state, 'representacion_grafo', 'representacion_grafo.json');
+            clearSimulation('graph');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => restoreGraphState(data, cy));
+        }
+    </script>
   </body>
 </html>

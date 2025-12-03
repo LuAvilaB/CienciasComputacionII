@@ -23,6 +23,8 @@
   <body>
     <div class="cabecera">
      <h1>Operaciones con un Grafo</h1>
+    <button onclick="handleSave()">💾 Guardar</button>
+    <button onclick="handleLoad()">📂 Recuperar</button>
     <button><a href="operaciones_grafos.html">Regresar</a></button>   
     </div>
     <article class="divisor">
@@ -63,6 +65,18 @@
       </section>
     </article>
 
+    <script src="../funciones/saveload.js"></script>
     <script src="operaciones1grafo.js"></script>
+    <script>
+        function handleSave() {
+            const state = captureGraphState(cy);
+            saveToFile(state, 'operaciones_1grafo', 'operaciones_1grafo.json');
+            clearSimulation('graph');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => restoreGraphState(data, cy));
+        }
+    </script>
   </body>
 </html>

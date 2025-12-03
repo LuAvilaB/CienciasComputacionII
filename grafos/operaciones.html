@@ -45,6 +45,8 @@
   <body>
     <div class="cabecera">
      <h1>Operaciones con dos Grafos</h1>
+    <button onclick="handleSave()">💾 Guardar</button>
+    <button onclick="handleLoad()">📂 Recuperar</button>
     <button><a href="operaciones_grafos.html">Regresar</a></button>   
     </div>
     <article class="divisor">
@@ -105,6 +107,39 @@
       </section>
     </article>
 
+    <script src="../funciones/saveload.js"></script>
     <script src="operaciones.js"></script>
+    <script>
+        function handleSave() {
+            // Capturar dos grafos
+            const state1 = captureGraphState(cy1);
+            const state2 = captureGraphState(cy2);
+            const combinedState = {
+                type: 'graph_operations_2',
+                timestamp: new Date().toISOString(),
+                data: {
+                    graph1: state1.data,
+                    graph2: state2.data
+                }
+            };
+            saveToFile(combinedState, 'operaciones_2grafos', 'operaciones_2grafos.json');
+            clearSimulation('graph');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => {
+                if (data.type === 'graph_operations_2' && data.data.graph1 && data.data.graph2) {
+                    // Restaurar grafo 1
+                    const state1 = { type: 'graph', data: data.data.graph1 };
+                    restoreGraphState(state1, cy1);
+                    // Restaurar grafo 2
+                    const state2 = { type: 'graph', data: data.data.graph2 };
+                    restoreGraphState(state2, cy2);
+                } else {
+                    alert('El archivo no corresponde a esta simulación');
+                }
+            });
+        }
+    </script>
   </body>
 </html>

@@ -22,6 +22,8 @@
   <body>
     <div class="cabecera">
       <h1>Expansiones y Reducciones</h1>
+      <button onclick="handleSave()">💾 Guardar</button>
+      <button onclick="handleLoad()">📂 Recuperar</button>
       <button><a href="../busquedas/busquedas_externas_otros.html">Regresar</a></button>
     </div>
     <article class="divisor">
@@ -114,7 +116,51 @@
       </section>
     </article>
 
+    <script src="../funciones/saveload.js"></script>
     <script src="../funciones/hash.js"></script>
     <script src="script.js"></script>
+    <script>
+        function handleSave() {
+            const state = {
+                type: 'dinamica',
+                timestamp: new Date().toISOString(),
+                data: {
+                    cubetas: document.getElementById('cubetas').value,
+                    registros: document.getElementById('reg')?.value,
+                    porcentajeExpansion: document.getElementById('porexp').value,
+                    porcentajeReduccion: document.getElementById('porred').value,
+                    tipoHash: document.getElementById('hash').value,
+                    funcionHash: document.getElementById('hash-opt').value
+                }
+            };
+            // Añadir estructura si existe
+            if (typeof tabla !== 'undefined') {
+                state.data.tabla = tabla;
+            }
+            saveToFile(state, 'expansiones_reducciones', 'expansiones_reducciones.json');
+            clearSimulation('search');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => {
+                if (data.type === 'dinamica') {
+                    if (data.data.cubetas) document.getElementById('cubetas').value = data.data.cubetas;
+                    if (data.data.registros) document.getElementById('reg').value = data.data.registros;
+                    if (data.data.porcentajeExpansion) document.getElementById('porexp').value = data.data.porcentajeExpansion;
+                    if (data.data.porcentajeReduccion) document.getElementById('porred').value = data.data.porcentajeReduccion;
+                    if (data.data.tipoHash) document.getElementById('hash').value = data.data.tipoHash;
+                    if (data.data.funcionHash) document.getElementById('hash-opt').value = data.data.funcionHash;
+                    // Restaurar estructura si está disponible
+                    if (data.data.tabla && typeof mostrarTabla === 'function') {
+                        tabla = data.data.tabla;
+                        mostrarTabla();
+                    }
+                    alert('Simulación recuperada exitosamente');
+                } else {
+                    alert('El archivo no corresponde a esta simulación');
+                }
+            });
+        }
+    </script>
   </body>
 </html>

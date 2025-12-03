@@ -18,6 +18,8 @@
     
     <div class="cabecera">
      <h1>Búsqueda Binaria - Memoria Interna</h1>
+    <button onclick="handleSave()">💾 Guardar</button>
+    <button onclick="handleLoad()">📂 Recuperar</button>
     <button><a href="busquedas_internas.html">Regresar</a></button>   
     </div>
     
@@ -71,5 +73,17 @@
         </div>
     </div>
     
+    <script src="../funciones/saveload.js"></script>
+    <script>
+        function handleSave() {
+            const state = captureSearchState();
+            saveToFile(state, 'busqueda_binaria_interna', 'busqueda_binaria_interna.json');
+            clearSimulation('search');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => restoreSearchState(data));
+        }
+    </script>
 </body>
 </html>

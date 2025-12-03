@@ -107,6 +107,9 @@ function control() {
       }
     }
 
+    // Actualizar referencia global explícitamente
+    window.estructura = estructura;
+
     digsTam = tamClave;
     dibujarArreglo();
   }
@@ -398,6 +401,13 @@ function control() {
   function dibujarArreglo() {
     htmlElements.tablarArr.innerHTML = filaHeadTemplate;
     htmlElements.inputsTabla = [];
+    
+    // Recalcular digsTam si es necesario (ej. al cargar archivo)
+    if (!digsTam) {
+        let n = parseInt(htmlElements.nInput.value);
+        digsTam = parseInt(document.querySelector("#i-tam-clave")?.value || (n ? n.toString().length : 0));
+    }
+
     let largoTam = estructura.tam.toString().length;
     let bloqueActual = document.createElement("div");
     bloqueActual.className = "bloque";
@@ -479,6 +489,16 @@ function control() {
     htmlElements.inputsTabla[ind].value = "";
     estructura.array[ind] = undefined;
   }
+
+  // Exponer variables y funciones al scope global para saveload.js
+  window.estructura = estructura;
+  window.dibujarArreglo = dibujarArreglo;
+  
+  // Función para actualizar la variable local desde fuera (para cargar estado)
+  window.setEstructura = function(nuevaEstructura) {
+      estructura = nuevaEstructura;
+      window.estructura = nuevaEstructura;
+  };
 }
 
 window.addEventListener("load", () => {

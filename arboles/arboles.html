@@ -20,6 +20,8 @@
   <body>
     <div class="cabecera">
         <h1>Visualizador de Árboles Binarios</h1>
+        <button onclick="handleSave()">💾 Guardar</button>
+        <button onclick="handleLoad()">📂 Recuperar</button>
         <button><a href="../busquedas/busquedas_internas_otros.html">Regresar</a></button>
     </div>
     <article class="divisor">
@@ -51,6 +53,41 @@
         </div>
       </section>
     </article>
+    <script src="../funciones/saveload.js"></script>
     <script src="arbolscript.js"></script>
+    <script>
+        function handleSave() {
+            const state = {
+                type: 'arboles',
+                timestamp: new Date().toISOString(),
+                data: {
+                    treeType: document.getElementById('tree-type').value,
+                    inputData: document.getElementById('input-data').value
+                }
+            };
+            if (typeof cy !== 'undefined' && cy) {
+                const graphState = captureGraphState(cy);
+                state.data.graph = graphState.data;
+            }
+            saveToFile(state, 'arboles', 'arboles.json');
+            clearSimulation('graph');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => {
+                if (data.type === 'arboles') {
+                    if (data.data.treeType) document.getElementById('tree-type').value = data.data.treeType;
+                    if (data.data.inputData) document.getElementById('input-data').value = data.data.inputData;
+                    if (data.data.graph && typeof cy !== 'undefined') {
+                        const graphState = { type: 'graph', data: data.data.graph };
+                        restoreGraphState(graphState, cy);
+                    }
+                    alert('Simulación recuperada exitosamente');
+                } else {
+                    alert('El archivo no corresponde a esta simulación');
+                }
+            });
+        }
+    </script>
   </body>
 </html>

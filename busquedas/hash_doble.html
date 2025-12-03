@@ -45,6 +45,8 @@
     
     <div class="cabecera">
      <h1>Hash con Doble Dispersión</h1>
+    <button onclick="handleSave()">💾 Guardar</button>
+    <button onclick="handleLoad()">📂 Recuperar</button>
     <button><a href="funciones_hash.html">Regresar</a></button>   
     </div>
     
@@ -116,5 +118,41 @@
         </div>
     </div>
     
+    <script src="../funciones/saveload.js"></script>
+    <script>
+        function handleSave() {
+            const state = captureSearchState();
+            // Capturar configuraciones específicas de hash doble
+            const maxLoad = document.getElementById('i-max-load');
+            const minLoad = document.getElementById('i-min-load');
+            const autoReduce = document.getElementById('cb-auto-reduce');
+            if (maxLoad) state.data.maxLoad = maxLoad.value;
+            if (minLoad) state.data.minLoad = minLoad.value;
+            if (autoReduce) state.data.autoReduce = autoReduce.checked;
+            
+            saveToFile(state, 'hash_doble', 'hash_doble.json');
+            clearSimulation('search');
+        }
+        
+        function handleLoad() {
+            loadFromFile((data) => {
+                // Restaurar configuraciones específicas antes del estado general
+                if (data.data.maxLoad) {
+                    const maxLoad = document.getElementById('i-max-load');
+                    if (maxLoad) maxLoad.value = data.data.maxLoad;
+                }
+                if (data.data.minLoad) {
+                    const minLoad = document.getElementById('i-min-load');
+                    if (minLoad) minLoad.value = data.data.minLoad;
+                }
+                if (typeof data.data.autoReduce !== 'undefined') {
+                    const autoReduce = document.getElementById('cb-auto-reduce');
+                    if (autoReduce) autoReduce.checked = data.data.autoReduce;
+                }
+                
+                restoreSearchState(data);
+            });
+        }
+    </script>
 </body>
 </html>
