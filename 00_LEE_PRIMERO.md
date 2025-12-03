@@ -111,7 +111,7 @@ CienciasComputacionII/
 ### 🔧 ADMINISTRADORES/DEVOPS
 ✅ Guía de instalación (9.2 KB)  
 ✅ Paso a paso para instalar  
-✅ Despliegue en Firebase  
+✅ Ejecución local  
 ✅ Troubleshooting  
 
 ---
@@ -258,11 +258,8 @@ Contenido:
 - ✅ Requisitos (software, HW, navegadores)
 - ✅ Instalación Node.js (Windows, macOS, Linux)
 - ✅ Descargar proyecto
-- ✅ npm install
-- ✅ Configuración local (3 opciones)
-- ✅ Despliegue Firebase (6 pasos)
-- ✅ Configuración avanzada
-- ✅ Desarrollo con emulador
+- ✅ npm install (opcional)
+- ✅ Ejecución local (3 opciones)
 - ✅ Debug con DevTools
 - ✅ Troubleshooting (10 problemas)
 

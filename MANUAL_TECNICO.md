@@ -26,7 +26,7 @@
 **Stack Tecnológico:**
 - Frontend: HTML5, CSS3, JavaScript (Vanilla)
 - Visualización de Grafos: Cytoscape.js v3.33.1
-- Hosting: Firebase Hosting
+- Ejecución: Local (navegador)
 - Control de Versiones: Git
 
 ---
@@ -38,24 +38,24 @@ El proyecto sigue una arquitectura **modular y basada en componentes** con separ
 ```
 ┌─────────────────────────────────────────┐
 │      INTERFAZ DE USUARIO (HTML)         │
-│  - Formularios interactivos              │
-│  - Paneles de visualización              │
-│  - Elementos de control                  │
+│  - Formularios interactivos             │
+│  - Paneles de visualización             │
+│  - Elementos de control                 │
 └────────────────┬────────────────────────┘
                  │
 ┌────────────────▼────────────────────────┐
 │   LÓGICA DE NEGOCIO (JavaScript)        │
-│  - Algoritmos de búsqueda                │
-│  - Operaciones con grafos                │
-│  - Funciones hash                        │
-│  - Estructuras de datos                  │
+│  - Algoritmos de búsqueda               │
+│  - Operaciones con grafos               │
+│  - Funciones hash                       │
+│  - Estructuras de datos                 │
 └────────────────┬────────────────────────┘
                  │
 ┌────────────────▼────────────────────────┐
 │   VISUALIZACIÓN (CSS + Cytoscape)       │
-│  - Estilos generales                     │
-│  - Renderizado de grafos                 │
-│  - Animaciones                           │
+│  - Estilos generales                    │
+│  - Renderizado de grafos                │
+│  - Animaciones                          │
 └─────────────────────────────────────────┘
 ```
 
@@ -65,7 +65,7 @@ El proyecto sigue una arquitectura **modular y basada en componentes** con separ
 
 ```
 CienciasComputacionII/
-├── public/                      # Carpeta raíz servida por Firebase
+├── public/                      # Archivos principales (html, contenido)
 │   ├── inicio.html             # Página de inicio principal
 │   └── 404.html                # Página de error 404
 │
@@ -126,11 +126,11 @@ CienciasComputacionII/
 ├── estilos/                     # Estilos CSS
 │   └── general.css             # Hoja de estilos global
 │
-├── firebase.json               # Configuración de Firebase
+├── firebase.json               # Configuración (no se utiliza)
 ├── package.json                # Dependencias del proyecto
 ├── package-lock.json           # Lock file de dependencias
 ├── README.md                   # Documentación base
-└── .firebaserc                 # Configuración de Firebase CLI
+└── .firebaserc                 # Configuración (no se utiliza)
 ```
 
 ---
@@ -566,35 +566,30 @@ element.innerHTML += `<div>${contenido}</div>`;
 
 ## Despliegue
 
-### Prerequisitos
-- Node.js y npm instalados
-- Cuenta de Firebase
-- Firebase CLI instalado (`npm install -g firebase-tools`)
+El proyecto se ejecuta localmente en el navegador. No requiere despliegue en servidores.
 
-### Pasos de Despliegue
+### Ejecución Local
 
 ```bash
-# 1. Instalar dependencias locales
-npm install
+# Opción 1: Live Server en VS Code (RECOMENDADO)
+# Click derecho en public/inicio.html → Open with Live Server
 
-# 2. Probar localmente (si hay servidor local)
-# Usar Live Server o similar en VS Code
+# Opción 2: http-server
+npm install -g http-server
+http-server public
+# Abre http://localhost:8080
 
-# 3. Login a Firebase
-firebase login
-
-# 4. Desplegar
-firebase deploy
-
-# 5. Verificar en Firebase Console
-# https://console.firebase.google.com
+# Opción 3: Navegador directo
+# Abre public/inicio.html en tu navegador
 ```
 
-### Estructura de Despliegue
+### Distribución
 
-- **Carpeta public/** se sirve como raíz
-- `public/inicio.html` → `https://tu-proyecto.firebaseapp.com/inicio.html`
-- Otros archivos accesibles directamente desde raíz
+Para compartir con otros:
+1. Comparte la carpeta del proyecto
+2. O comparte el repositorio Git
+3. Ellos clonan/descargan
+4. Abren public/inicio.html en navegador
 
 ---
 
@@ -662,7 +657,6 @@ hashMod(key, n)  // Retorna 1 a n, nunca 0
 
 - **Cytoscape.js Documentation**: https://js.cytoscape.org/
 - **MDN JavaScript Reference**: https://developer.mozilla.org/en-US/docs/Web/JavaScript
-- **Firebase Hosting Docs**: https://firebase.google.com/docs/hosting
 
 ---
 

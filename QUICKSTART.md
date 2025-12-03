@@ -27,8 +27,14 @@
 
 ### Abrir la plataforma
 ```
-Link: https://cienciascomputacionii.firebaseapp.com/
-O: Abre public/inicio.html en tu navegador
+1. Abre la carpeta del proyecto
+2. Ve a: public/inicio.html
+3. Abre en tu navegador
+   (doble clic o arrastra al navegador)
+
+O usa Live Server en VS Code:
+1. Click derecho en public/inicio.html
+2. "Open with Live Server"
 ```
 
 ### Probar Búsqueda Binaria
@@ -114,14 +120,13 @@ O: Abre public/inicio.html en tu navegador
 ## 🚀 Despliegue en 3 pasos
 
 ```bash
-# 1. Instalar Firebase CLI
-npm install -g firebase-tools
+# El proyecto corre localmente, no necesita despliegue
+# Simplemente abre public/inicio.html en tu navegador
 
-# 2. Login
-firebase login
-
-# 3. Desplegar
-firebase deploy
+# O usa Live Server:
+1. Click derecho en public/inicio.html
+2. "Open with Live Server"
+3. ¡Listo!
 ```
 
 ---
@@ -149,17 +154,15 @@ firebase deploy
 
 ```
 CienciasComputacionII/
-├── QUICKSTART.md         ← TÚ ESTÁS AQUÍ
-├── MANUAL_USUARIO.md     ← LEE ESTO primero
-├── MANUAL_TECNICO.md     ← Para técnicos
-├── README.md             ← Descripción general
-├── funciones/
-│   ├── arreglo.js       ← Clase Estructura
-│   ├── hash.js          ← Funciones hash
-│   └── control.js       ← Manejador eventos
 ├── public/
-│   └── inicio.html      ← Página entrada
-└── firebase.json        ← Config Firebase
+│   └── inicio.html          ← ABRE ESTO EN EL NAVEGADOR
+├── busquedas/
+├── grafos/
+├── funciones/
+├── estilos/
+├── MANUAL_USUARIO.md
+├── MANUAL_TECNICO.md
+└── package.json
 ```
 
 ---
@@ -189,10 +192,10 @@ TOTAL: ~4 horas para cubrir todo
 
 ## 🔗 Enlaces Útiles
 
-- **Plataforma**: https://cienciascomputacionii.firebaseapp.com/
+- **Proyecto Local**: Abre public/inicio.html en tu navegador
 - **GitHub**: https://github.com/LuAvilaB/CienciasComputacionII
-- **Firebase Console**: https://console.firebase.google.com
 - **Cytoscape.js Docs**: https://js.cytoscape.org/
+- **MDN JavaScript**: https://developer.mozilla.org/
 
 ---
 
@@ -207,7 +210,7 @@ TOTAL: ~4 horas para cubrir todo
 ## ✅ Checklist: Estoy Listo
 
 - [ ] Leí introducción (2 min)
-- [ ] Accedí a https://cienciascomputacionii.firebaseapp.com/
+- [ ] Abrí public/inicio.html en navegador
 - [ ] Probé un módulo simple (Búsqueda Binaria o Hash)
 - [ ] Entiendo cómo agregar y buscar claves
 - [ ] Leí la sección FAQ si tuve dudas

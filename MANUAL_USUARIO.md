@@ -56,9 +56,12 @@ La plataforma te permite:
 
 ### Acceder a la Plataforma
 
-1. Abre tu navegador web
-2. Navega a: `https://cienciascomputacionii.firebaseapp.com/`
-3. Verás la pantalla de inicio con dos módulos principales
+1. Abre el navegador web
+2. Abre la carpeta del proyecto
+3. Ve a `public/inicio.html`
+4. Abre con tu navegador (doble clic o arrastra al navegador)
+5. O usa Live Server en VS Code (Click derecho en public/inicio.html → Open with Live Server)
+6. Verás la pantalla de inicio con dos módulos principales
 
 ### Pantalla de Inicio
 
@@ -67,11 +70,11 @@ La plataforma te permite:
 │    CIENCIAS DE LA COMPUTACIÓN II       │
 │          Búsquedas y Grafos            │
 │                                        │
-│  ┌─────────────┐  ┌─────────────────┐ │
-│  │ BÚSQUEDAS   │  │ GRAFOS          │ │
-│  │             │  │                 │ │
-│  │ Iniciar »   │  │ Iniciar »       │ │
-│  └─────────────┘  └─────────────────┘ │
+│  ┌─────────────┐  ┌─────────────────┐  │
+│  │ BÚSQUEDAS   │  │ GRAFOS          │  │
+│  │             │  │                 │  │
+│  │ Iniciar »   │  │ Iniciar »       │  │
+│  └─────────────┘  └─────────────────┘  │
 └────────────────────────────────────────┘
 ```
 

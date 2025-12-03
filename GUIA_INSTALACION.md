@@ -1,21 +1,20 @@
-# GUÍA DE INSTALACIÓN Y CONFIGURACIÓN
+# GUÍA DE INSTALACIÓN Y EJECUCIÓN
 
 ## 📋 Tabla de Contenidos
 1. [Requisitos](#requisitos-del-sistema)
 2. [Instalación](#instalación)
-3. [Configuración Local](#configuración-local)
-4. [Despliegue en Firebase](#despliegue-en-firebase)
-5. [Troubleshooting](#troubleshooting)
+3. [Ejecución Local](#ejecución-local)
+4. [Troubleshooting](#troubleshooting)
 
 ---
 
 ## Requisitos del Sistema
 
 ### Software
-- **Node.js**: v12.0.0 o superior
-- **npm**: incluido con Node.js
-- **Git**: para control de versiones (opcional)
-- **Firebase CLI**: para despliegue
+- **Node.js**: v12.0.0 o superior (opcional, solo para http-server)
+- **npm**: incluido con Node.js (opcional)
+- **Git**: para clonar el proyecto
+- **Navegador**: Chrome, Firefox, Safari o Edge
 
 ### Navegadores
 - Chrome 60+
@@ -25,12 +24,12 @@
 
 ### Hardware Mínimo
 - 512MB RAM
-- 100MB espacio en disco
-- Procesador: Dual Core 2GHz
+- 50MB espacio en disco
+- Procesador: Dual Core 1GHz
 
 ### Conexión de Internet
-- Recomendado: 5 Mbps
-- Mínimo: 1 Mbps
+- No requerida para ejecutar localmente
+- Requerida para clonar del repositorio
 
 ---
 
@@ -109,16 +108,18 @@ npm list
 ### Opción 1: Usar Live Server en VS Code (RECOMENDADO)
 
 ```
-1. Instala extensión "Live Server" en VS Code
-2. Click derecho en public/inicio.html
-3. Selecciona "Open with Live Server"
-4. Se abrirá http://127.0.0.1:5500
+1. Abre VS Code
+2. Abre la carpeta del proyecto
+3. Click derecho en public/inicio.html
+4. Selecciona "Open with Live Server"
+5. Se abrirá http://127.0.0.1:5500
 ```
 
 **Ventajas**:
 - Recarga automática
 - Sin línea de comandos
 - Muy simple
+- Perfecto para desarrollo
 
 ### Opción 2: Usar http-server
 
@@ -132,195 +133,32 @@ http-server public
 # Abre http://localhost:8080 en navegador
 ```
 
+**Ventajas**:
+- Control total
+- Múltiples archivos estáticos
+- Configuración avanzada
+
 ### Opción 3: Abrir Directamente
 
 ```
 1. Abre el explorador de archivos
 2. Navega a: public/inicio.html
-3. Abre con navegador web
+3. Abre con tu navegador web
    (arrastrar sobre navegador o doble clic)
-
-Nota: Algunas funciones podrían no funcionar
 ```
+
+**Nota**: Todas las funciones deberían funcionar correctamente.
 
 ### Verificar que Funciona
 
-1. Abre inicio.html en navegador
+1. Abre public/inicio.html en navegador
 2. Verifica que ves dos botones: BÚSQUEDAS y GRAFOS
 3. Haz clic en BÚSQUEDAS
 4. Deberías ver el menú de búsquedas
 
 ---
 
-## Despliegue en Firebase
-
-### 1. Crear Cuenta Firebase
-
-```
-1. Visita https://console.firebase.google.com
-2. Haz clic en "Agregar Proyecto"
-3. Ingresa nombre del proyecto
-4. Sigue pasos de configuración
-5. Selecciona "Hosting"
-```
-
-### 2. Instalar Firebase CLI
-
-```bash
-# Windows/macOS/Linux
-npm install -g firebase-tools
-
-# Verifica
-firebase --version
-```
-
-### 3. Inicializar Firebase Localmente
-
-```bash
-# En la carpeta del proyecto
-firebase login
-# Se abrirá navegador para autenticarte
-
-firebase init
-# Cuando pregunte:
-# ? Are you ready to proceed? Y
-# ? Which Firebase features do you want to set up? Hosting
-# ? What do you want to use as your public directory? public
-# ? Configure as a single-page app? N
-# ? Set up automatic builds? N
-```
-
-### 4. Actualizar .firebaserc
-
-```bash
-# Verificar que firebaserc esté actualizado
-cat .firebaserc
-
-# Deberías ver:
-{
-  "projects": {
-    "default": "tu-proyecto-firebase"
-  }
-}
-```
-
-### 5. Desplegar
-
-```bash
-firebase deploy
-
-# Esperarás mensaje similar a:
-# ✔  Deploy complete!
-# Project Console: https://console.firebase.google.com/project/...
-# Hosting URL: https://tu-proyecto.firebaseapp.com
-```
-
-### 6. Verificar Despliegue
-
-```
-1. Abre la URL mostrada en navegador
-2. Deberías ver "Ciencias de la Computación II"
-3. Prueba un módulo para verificar que funciona
-```
-
----
-
-## Actualizar Despliegue
-
-Cada vez que hagas cambios:
-
-```bash
-# Haz cambios en los archivos
-# Luego ejecuta:
-
-firebase deploy
-
-# Solo despliega los cambios
-```
-
-### Ver Historial de Despliegues
-
-```bash
-firebase hosting:channel:list
-
-# Ver detalles
-firebase hosting:channel:details nombre-canal
-```
-
----
-
-## Configuración Avanzada
-
-### Habilitar HTTPS (Firebase lo hace automáticamente)
-```
-Firebase Hosting proporciona certificados SSL gratis
-Automáticamente redirige HTTP → HTTPS
-```
-
-### Agregar Dominio Personalizado
-
-```bash
-1. Ve a Firebase Console
-2. Hosting → Dominios
-3. Agregar dominio
-4. Sigue instrucciones de DNS
-5. Espera validación (hasta 24 horas)
-```
-
-### Configurar Redirecciones
-
-En `firebase.json`:
-```json
-{
-  "hosting": {
-    "redirects": [
-      {
-        "source": "/antiguo/**",
-        "destination": "/nuevo/**",
-        "type": 301
-      }
-    ]
-  }
-}
-```
-
-### Agregar Headers de Seguridad
-
-En `firebase.json`:
-```json
-{
-  "hosting": {
-    "headers": [
-      {
-        "source": "/**",
-        "headers": [
-          {
-            "key": "X-Content-Type-Options",
-            "value": "nosniff"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
----
-
 ## Desarrollo Local Avanzado
-
-### Usar Firebase Emulator (Desarrollo sin desplegar)
-
-```bash
-# Instalar emulador
-firebase init emulators
-? Which emulators? Hosting
-
-# Ejecutar emulador
-firebase emulators:start
-
-# Accede a http://localhost:5000
-```
 
 ### Debug con DevTools
 
@@ -365,7 +203,11 @@ node --version
 
 **Solución**:
 ```bash
-npm install -g firebase-tools
+# No necesitas Firebase CLI para ejecución local
+# El proyecto corre directamente en navegador
+
+# Si quieres instalar http-server:
+npm install -g http-server
 ```
 
 ### Problema: "ERR! Unable to install dependencies"
@@ -433,19 +275,10 @@ kill -9 [PID]
 
 ### Problema: "ERROR: Permission denied" en deploy
 
-**Causa**: No hay permisos en proyecto Firebase
+**Causa**: No aplicable, el proyecto no usa despliegue
 
 **Solución**:
-```bash
-# Verifica credenciales
-firebase login:list
-
-# Re-login si necesario
-firebase logout
-firebase login
-
-# Verifica permisos en Firebase Console
-```
+El proyecto se ejecuta localmente, no requiere despliegue en servidores
 
 ### Problema: Cambios no se ven después de desplegar
 
@@ -467,16 +300,13 @@ O:
 
 ## Checklist: Instalación Exitosa
 
-- [ ] Node.js instalado: `node --version` ✓
-- [ ] npm instalado: `npm --version` ✓
-- [ ] Proyecto descargado
-- [ ] `npm install` completado sin errores
-- [ ] Inicio local funciona (ves páginas HTML)
-- [ ] Firebase CLI instalado: `firebase --version` ✓
-- [ ] Cuente Firebase creada
-- [ ] Proyecto inicializado: `firebase init` ✓
-- [ ] `firebase deploy` exitoso
-- [ ] Proyecto online funciona
+- [ ] Node.js instalado (opcional): `node --version` ✓
+- [ ] npm instalado (opcional): `npm --version` ✓
+- [ ] Proyecto descargado/clonado
+- [ ] public/inicio.html abierto en navegador
+- [ ] Ves la página "Ciencias de la Computación II"
+- [ ] Puedes hacer clic en BÚSQUEDAS o GRAFOS
+- [ ] Módulos funcionan correctamente
 
 ---
 
@@ -486,9 +316,3 @@ O:
 2. 📖 Lee [MANUAL_USUARIO.md](./MANUAL_USUARIO.md)
 3. 🎮 Prueba un módulo
 4. 🔧 Si quieres modificar, lee [MANUAL_TECNICO.md](./MANUAL_TECNICO.md)
-
----
-
-**¿Necesitas ayuda? Consulta MANUAL_TECNICO.md sección Troubleshooting**
-
-*Última actualización: Diciembre 2024*

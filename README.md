@@ -32,21 +32,23 @@
 
 ## 🚀 Inicio Rápido
 
-### Acceso Online
-```
-https://cienciascomputacionii.firebaseapp.com/
-```
-
-### Desarrollo Local
+### Acceso Local
 ```bash
 # Clonar repositorio
-git clone <url>
+git clone https://github.com/LuAvilaB/CienciasComputacionII.git
 
 # Instalar dependencias
 npm install
 
-# Usar Live Server en VS Code
-# O abrir public/inicio.html en navegador
+# Opción 1: Usar Live Server en VS Code (RECOMENDADO)
+# Click derecho en public/inicio.html → Open with Live Server
+
+# Opción 2: Usar http-server
+npm install -g http-server
+http-server public
+
+# Opción 3: Abrir directamente
+# public/inicio.html en navegador
 ```
 
 ---
@@ -55,7 +57,7 @@ npm install
 
 - **Frontend**: HTML5, CSS3, JavaScript Vanilla
 - **Visualización**: Cytoscape.js v3.33.1
-- **Hosting**: Firebase Hosting
+- **Ejecución**: Local (Live Server, http-server o navegador)
 - **Control de Versiones**: Git
 
 ---
@@ -64,7 +66,7 @@ npm install
 
 ```
 CienciasComputacionII/
-├── public/              # Raíz del servidor (Firebase)
+├── public/              # Archivos principales (html, contenido)
 ├── busquedas/           # Módulo de búsquedas
 ├── grafos/              # Módulo de grafos
 ├── indices/             # Índices
@@ -75,7 +77,7 @@ CienciasComputacionII/
 ├── estilos/             # CSS global
 ├── MANUAL_TECNICO.md    # Documentación técnica
 ├── MANUAL_USUARIO.md    # Manual de usuario
-└── firebase.json        # Configuración Firebase
+└── firebase.json        # Configuración (no se utiliza)
 ```
 
 ---
@@ -127,26 +129,28 @@ CienciasComputacionII/
 ## 🔧 Configuración
 
 ### Prerequisites
-- Node.js 12+
-- npm o yarn
+- Node.js 12+ (opcional)
+- npm o yarn (opcional)
 - Navegador moderno (Chrome, Firefox, Safari, Edge)
 
 ### Instalación
 ```bash
+git clone https://github.com/LuAvilaB/CienciasComputacionII.git
+cd CienciasComputacionII
 npm install
 ```
 
-### Desarrollo
+### Ejecución
 ```bash
-# Usar Live Server en VS Code o
+# Opción 1: Live Server en VS Code (RECOMENDADO)
+# Click derecho en public/inicio.html → Open with Live Server
+
+# Opción 2: http-server
 npm install -g http-server
 http-server public
-```
 
-### Despliegue
-```bash
-firebase login
-firebase deploy
+# Opción 3: Navegador directo
+# Abre public/inicio.html
 ```
 
 ---
