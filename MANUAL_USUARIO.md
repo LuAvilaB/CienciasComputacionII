@@ -33,17 +33,21 @@ La plataforma te permite:
 
 ## Requisitos del Sistema
 
+### Para Acceso en Línea
+- **Conexión a Internet** (requerida)
+- Navegador moderno (Chrome, Firefox, Safari, Edge)
+- Resolución mínima: 1024x768 (recomendado)
+
+### Para Uso Local
+- **Sin conexión a Internet** (opcional)
+- Descarga del proyecto desde GitHub
+- Navegador moderno
+
 ### Navegadores Soportados
 - **Chrome** 60+
 - **Firefox** 55+
 - **Safari** 12+
 - **Edge** 79+
-
-### Requisitos Mínimos
-- Conexión a Internet
-- Resolución de pantalla mínima: 1024x768
-- JavaScript habilitado
-- Cookies habilitadas
 
 ### Dispositivos
 - Desktop/Laptop (recomendado)
@@ -56,12 +60,17 @@ La plataforma te permite:
 
 ### Acceder a la Plataforma
 
-1. Abre el navegador web
-2. Abre la carpeta del proyecto
-3. Ve a `public/inicio.html`
-4. Abre con tu navegador (doble clic o arrastra al navegador)
-5. O usa Live Server en VS Code (Click derecho en public/inicio.html → Open with Live Server)
-6. Verás la pantalla de inicio con dos módulos principales
+**Opción 1: En línea (Recomendado)**
+1. Abre tu navegador web
+2. Ve a: **https://cienciascomputacionii.web.app**
+3. ¡Ya está! La plataforma se cargará automáticamente
+
+**Opción 2: Local (sin conexión)**
+1. Descarga el proyecto desde [GitHub](https://github.com/LuAvilaB/CienciasComputacionII)
+2. Abre `public/inicio.html` en tu navegador
+3. O usa Live Server en VS Code: Click derecho en `public/inicio.html` → "Open with Live Server"
+
+**Luego de cargar, verás la pantalla de inicio con dos módulos principales:**
 
 ### Pantalla de Inicio
 
