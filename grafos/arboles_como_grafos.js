@@ -167,10 +167,56 @@ function resetStyles() {
 
 // --- Algorithms ---
 
+// Helper to render a secondary graph
+function renderSecondaryGraph(containerId, elements, layoutName = 'circle') {
+    return cytoscape({
+        container: document.getElementById(containerId),
+        elements: elements,
+        style: [
+            {
+                selector: 'node',
+                style: {
+                    'background-color': '#8c5d51',
+                    'label': 'data(label)',
+                    'color': themeColors.nodeText,
+                    'text-valign': 'center',
+                    'text-halign': 'center',
+                    'font-size': '12px',
+                    'width': 30,
+                    'height': 30
+                }
+            },
+            {
+                selector: 'edge',
+                style: {
+                    'width': 2,
+                    'line-color': themeColors.defaultEdge,
+                    'target-arrow-shape': 'none',
+                    'curve-style': 'bezier',
+                    'label': 'data(weight)',
+                    'font-size': '10px',
+                    'text-background-color': '#fff',
+                    'text-background-opacity': 0.7
+                }
+            },
+            {
+                selector: '.mst',
+                style: { 'line-color': themeColors.mstEdge, 'width': 4 }
+            },
+            {
+                selector: '.chord',
+                style: { 'line-color': themeColors.chordEdge, 'line-style': 'dashed' }
+            }
+        ],
+        layout: { name: layoutName, padding: 20 }
+    });
+}
+
 // Prim's Algorithm for MST
 function calculateMST() {
     resetStyles();
     mstEdges.clear();
+    hideAllSections();
 
     const nodes = cy.nodes();
     if (nodes.length === 0) return;
@@ -216,6 +262,110 @@ function calculateMST() {
     });
 
     updateStats();
+    showMSTVisualization();
+}
+
+function showMSTVisualization() {
+    document.getElementById('mst-section').style.display = 'block';
+    
+    // Prepare data for MST Graph
+    const mstElements = [];
+    cy.nodes().forEach(n => mstElements.push(n.json()));
+    cy.edges().forEach(e => {
+        if (mstEdges.has(e.id())) {
+            const data = e.json();
+            data.classes = 'mst';
+            mstElements.push(data);
+        }
+    });
+    renderSecondaryGraph('mst-graph', mstElements);
+    
+    // Prepare data for Complement Graph
+    const compElements = [];
+    cy.nodes().forEach(n => compElements.push(n.json()));
+    cy.edges().forEach(e => {
+        if (!mstEdges.has(e.id())) {
+            const data = e.json();
+            data.classes = 'chord';
+            compElements.push(data);
+        }
+    });
+    renderSecondaryGraph('complement-graph', compElements);
+
+    // Update properties text
+    const n = cy.nodes().length;
+    const e = cy.edges().length;
+    const branches = mstEdges.size;
+    const chords = e - branches;
+    
+    document.getElementById('mst-props').innerHTML = `
+        <strong>Ramas:</strong> ${branches}<br>
+        <strong>Peso Total:</strong> ${calculateTotalWeight(mstElements)}
+    `;
+    document.getElementById('complement-props').innerHTML = `
+        <strong>Cuerdas:</strong> ${chords}<br>
+        <strong>Ciclos Fundamentales Potenciales:</strong> ${chords}
+    `;
+}
+
+function calculateSpanningTree() {
+    resetStyles();
+    hideAllSections();
+    
+    // Simple BFS for a random spanning tree (not necessarily minimum)
+    const visited = new Set();
+    const stEdges = new Set();
+    const nodes = cy.nodes();
+    if (nodes.length === 0) return;
+    
+    const queue = [nodes[0]];
+    visited.add(nodes[0].id());
+    
+    while(queue.length > 0) {
+        const curr = queue.shift();
+        
+        curr.connectedEdges().forEach(edge => {
+            const neighbor = edge.source().id() === curr.id() ? edge.target() : edge.source();
+            if (!visited.has(neighbor.id())) {
+                visited.add(neighbor.id());
+                stEdges.add(edge.id());
+                queue.push(neighbor);
+                edge.addClass('mst'); // Reuse MST style for visual consistency
+            }
+        });
+    }
+    
+    document.getElementById('spanning-tree-section').style.display = 'block';
+    
+    const stElements = [];
+    cy.nodes().forEach(n => stElements.push(n.json()));
+    cy.edges().forEach(e => {
+        if (stEdges.has(e.id())) {
+            const data = e.json();
+            data.classes = 'mst';
+            stElements.push(data);
+        }
+    });
+    
+    renderSecondaryGraph('spanning-tree-graph', stElements, 'breadthfirst');
+}
+
+function calculateTotalWeight(elements) {
+    let sum = 0;
+    elements.forEach(el => {
+        if (el.data.weight) sum += parseInt(el.data.weight);
+    });
+    return sum;
+}
+
+function hideAllSections() {
+    document.getElementById('mst-section').style.display = 'none';
+    document.getElementById('circuits-section').style.display = 'none';
+    document.getElementById('spanning-tree-section').style.display = 'none';
+    document.getElementById('distance-table-section').style.display = 'none';
+    document.getElementById('matrix-section').style.display = 'none';
+    document.getElementById('definitions-panel').style.display = 'none';
+    document.getElementById('stats-panel').style.display = 'none';
 }
 
 function updateStats() {
@@ -268,6 +418,7 @@ function findPathInMST(sourceId, targetId) {
 }
 
 function showCircuits() {
+    hideAllSections();
     // For general circuits, we can just show fundamental ones + combinations, 
     // but for simplicity and educational value, showing Fundamental Circuits is the key requirement.
     // The prompt asks for "Circuits" AND "Fundamental Circuits".
@@ -281,6 +432,7 @@ function showCircuits() {
 }
 
 function showFundamentalCircuits() {
+    hideAllSections();
     if (mstEdges.size === 0) calculateMST();
 
     const fundamentalCircuits = [];
@@ -299,6 +451,62 @@ function showFundamentalCircuits() {
     });
 
     displayMatrix(fundamentalCircuits.map(fc => fc.edges), "Matriz de Circuitos Fundamentales", "FC", true);
+    
+    // Visualize Circuits
+    const container = document.getElementById('circuits-container');
+    container.innerHTML = '';
+    document.getElementById('circuits-section').style.display = 'block';
+
+    fundamentalCircuits.forEach((fc, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.style.width = '250px';
+        wrapper.style.marginBottom = '20px';
+        
+        const title = document.createElement('h4');
+        title.innerText = `Circuito Fundamental ${index + 1} (Cuerda: ${fc.chord})`;
+        title.style.color = 'white';
+        title.style.textAlign = 'center';
+        wrapper.appendChild(title);
+        
+        const graphDiv = document.createElement('div');
+        graphDiv.id = `fc-graph-${index}`;
+        graphDiv.style.height = '200px';
+        graphDiv.style.border = '1px solid #ccc';
+        graphDiv.style.backgroundColor = 'rgba(255,255,255,0.05)';
+        wrapper.appendChild(graphDiv);
+        
+        const propsDiv = document.createElement('div');
+        propsDiv.className = 'info-panel';
+        propsDiv.style.marginTop = '5px';
+        propsDiv.style.fontSize = '0.8em';
+        propsDiv.innerHTML = `<strong>Longitud:</strong> ${fc.edges.length}<br><strong>Aristas:</strong> ${fc.edges.join(', ')}`;
+        wrapper.appendChild(propsDiv);
+        
+        container.appendChild(wrapper);
+        
+        // Prepare elements for this circuit
+        const circuitElements = [];
+        const circuitEdgeSet = new Set(fc.edges);
+        const nodeSet = new Set();
+        
+        cy.edges().forEach(e => {
+            if (circuitEdgeSet.has(e.id())) {
+                const data = e.json();
+                data.classes = 'highlight';
+                circuitElements.push(data);
+                nodeSet.add(e.source().id());
+                nodeSet.add(e.target().id());
+            }
+        });
+        
+        cy.nodes().forEach(n => {
+            if (nodeSet.has(n.id())) {
+                circuitElements.push(n.json());
+            }
+        });
+        
+        renderSecondaryGraph(`fc-graph-${index}`, circuitElements);
+    });
 }
 
 function findAllCycles() {
@@ -340,6 +548,7 @@ function findAllCycles() {
 // --- Cut Sets & Fundamental Cut Sets ---
 
 function showCutSets() {
+    hideAllSections();
     // Similar to circuits, finding ALL cut sets is hard.
     // We will focus on Fundamental Cut Sets and maybe some combinations.
     const cutSets = findFundamentalCutSetsList();
@@ -347,6 +556,7 @@ function showCutSets() {
 }
 
 function showFundamentalCutSets() {
+    hideAllSections();
     if (mstEdges.size === 0) calculateMST();
     const cutSets = findFundamentalCutSetsList();
     displayMatrix(cutSets, "Matriz de Cortes Fundamentales", "FK", true);
@@ -459,6 +669,203 @@ function resetHighlight() {
 function highlightFundamentalItems(items) {
     // This function could be used to cycle through them or just show the first one
     // For now, the hover on the matrix handles the interaction.
+}
+
+// --- Applied Definitions & Metrics ---
+
+let distanceMatrix = {};
+
+function showAppliedDefinitions() {
+    hideAllSections();
+    document.getElementById('definitions-panel').style.display = 'block';
+    document.getElementById('distance-table-section').style.display = 'block';
+    
+    calculateDistanceMatrix();
+    renderDistanceTable();
+    document.getElementById('metric-result').innerHTML = 'Seleccione una métrica para ver resultados.';
+}
+
+function calculateDistanceMatrix() {
+    const nodes = cy.nodes();
+    const nodeIds = nodes.map(n => n.id());
+    distanceMatrix = {};
+    
+    // Initialize
+    nodeIds.forEach(i => {
+        distanceMatrix[i] = {};
+        nodeIds.forEach(j => {
+            if (i === j) distanceMatrix[i][j] = 0;
+            else distanceMatrix[i][j] = Infinity;
+        });
+    });
+    
+    // Set initial weights
+    cy.edges().forEach(edge => {
+        const u = edge.source().id();
+        const v = edge.target().id();
+        const w = parseInt(edge.data('weight')) || 1;
+        
+        // Undirected graph assumption for distance
+        if (w < distanceMatrix[u][v]) {
+            distanceMatrix[u][v] = w;
+            distanceMatrix[v][u] = w;
+        }
+    });
+    
+    // Floyd-Warshall
+    nodeIds.forEach(k => {
+        nodeIds.forEach(i => {
+            nodeIds.forEach(j => {
+                if (distanceMatrix[i][k] + distanceMatrix[k][j] < distanceMatrix[i][j]) {
+                    distanceMatrix[i][j] = distanceMatrix[i][k] + distanceMatrix[k][j];
+                }
+            });
+        });
+    });
+}
+
+function renderDistanceTable() {
+    const nodeIds = Object.keys(distanceMatrix).sort();
+    let html = `<table border="1" style="border-collapse: collapse; color: white; width: 100%;">`;
+    
+    // Header
+    html += `<tr><th>Vértice</th>`;
+    nodeIds.forEach(id => html += `<th>${id}</th>`);
+    html += `<th>Excentricidad</th><th>Suma Distancias</th></tr>`;
+    
+    // Rows
+    nodeIds.forEach(i => {
+        html += `<tr><td><strong>${i}</strong></td>`;
+        let maxDist = 0;
+        let sumDist = 0;
+        
+        nodeIds.forEach(j => {
+            const val = distanceMatrix[i][j];
+            const displayVal = val === Infinity ? '∞' : val;
+            html += `<td style="text-align: center;">${displayVal}</td>`;
+            
+            if (val !== Infinity) {
+                if (val > maxDist) maxDist = val;
+                sumDist += val;
+            }
+        });
+        
+        html += `<td style="text-align: center; font-weight: bold; color: #f1c40f;">${maxDist}</td>`;
+        html += `<td style="text-align: center; font-weight: bold; color: #3498db;">${sumDist}</td>`;
+        html += `</tr>`;
+    });
+    
+    html += `</table>`;
+    document.getElementById('distance-table-content').innerHTML = html;
+}
+
+function showMetric(metric) {
+    if (Object.keys(distanceMatrix).length === 0) calculateDistanceMatrix();
+    
+    const nodeIds = Object.keys(distanceMatrix);
+    const eccentricities = {};
+    const totalDistances = {};
+    let minEcc = Infinity;
+    let maxEcc = -Infinity;
+    let minTotalDist = Infinity;
+    
+    nodeIds.forEach(i => {
+        let maxDist = 0;
+        let sum = 0;
+        nodeIds.forEach(j => {
+            if (distanceMatrix[i][j] !== Infinity) {
+                if (distanceMatrix[i][j] > maxDist) maxDist = distanceMatrix[i][j];
+                sum += distanceMatrix[i][j];
+            }
+        });
+        eccentricities[i] = maxDist;
+        totalDistances[i] = sum;
+        
+        if (maxDist < minEcc) minEcc = maxDist;
+        if (maxDist > maxEcc) maxEcc = maxDist;
+        if (sum < minTotalDist) minTotalDist = sum;
+    });
+    
+    let resultHtml = "";
+    let highlightedNodes = new Set();
+    
+    switch(metric) {
+        case 'eccentricity':
+            resultHtml = "Excentricidad de cada vértice (ver tabla).";
+            // Highlight all? Or just show the graph normally.
+            break;
+            
+        case 'radius':
+            resultHtml = `Radio (mínima excentricidad): ${minEcc}`;
+            nodeIds.forEach(id => {
+                if (eccentricities[id] === minEcc) highlightedNodes.add(id);
+            });
+            break;
+            
+        case 'diameter':
+            resultHtml = `Diámetro (máxima excentricidad): ${maxEcc}`;
+            nodeIds.forEach(id => {
+                if (eccentricities[id] === maxEcc) highlightedNodes.add(id);
+            });
+            break;
+            
+        case 'center':
+            const centerNodes = nodeIds.filter(id => eccentricities[id] === minEcc);
+            resultHtml = `Centro (nodos con radio ${minEcc}): ${centerNodes.join(', ')}`;
+            centerNodes.forEach(id => highlightedNodes.add(id));
+            break;
+            
+        case 'median':
+            const medianNodes = nodeIds.filter(id => totalDistances[id] === minTotalDist);
+            resultHtml = `Mediana (nodos con mínima distancia total ${minTotalDist}): ${medianNodes.join(', ')}`;
+            medianNodes.forEach(id => highlightedNodes.add(id));
+            break;
+    }
+    
+    document.getElementById('metric-result').innerHTML = resultHtml;
+    
+    // Render Metric Graph
+    const metricGraphContainer = document.getElementById('metric-graph');
+    metricGraphContainer.style.display = 'block';
+    
+    const elements = [];
+    
+    if (metric === 'center' || metric === 'median') {
+        // Show ONLY the relevant nodes (and induced edges if any)
+        cy.nodes().forEach(n => {
+            if (highlightedNodes.has(n.id())) {
+                const data = n.json();
+                data.classes = 'highlight'; 
+                data.data.color = '#000';
+                elements.push(data);
+            }
+        });
+        
+        // Add edges only if both source and target are in the set
+        cy.edges().forEach(e => {
+            if (highlightedNodes.has(e.source().id()) && highlightedNodes.has(e.target().id())) {
+                const data = e.json();
+                data.classes = 'highlight';
+                elements.push(data);
+            }
+        });
+    } else {
+        // For other metrics (like radius/diameter/eccentricity), maybe show full graph with highlights?
+        // Or maybe the user wants specific paths? 
+        // For now, let's keep the full graph behavior for others as the user specifically complained about Center/Median.
+        // Actually, let's highlight the nodes in the full graph for context.
+        cy.nodes().forEach(n => {
+            const data = n.json();
+            if (highlightedNodes.has(n.id())) {
+                data.classes = 'highlight'; 
+                data.data.color = '#000'; 
+            }
+            elements.push(data);
+        });
+        cy.edges().forEach(e => elements.push(e.json()));
+    }
+    
+    renderSecondaryGraph('metric-graph', elements);
 }
 
 // Initialize

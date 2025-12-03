@@ -10,7 +10,7 @@ function hashCuadrado(key, n) {
 
     let cuadrado = key * key;
     let cuadradoStr = cuadrado.toString();
-    let diferencia = cuadradoStr.length - nStr.length + 1;
+    let diferencia = cuadradoStr.length - nStr.length;
     let digsARecortar = diferencia / 2; // digitos a recortar por cada lado
     let nuevaKey = cuadradoStr.substring(digsARecortar, cuadradoStr.length - digsARecortar);
     nuevaKey = parseInt(nuevaKey);

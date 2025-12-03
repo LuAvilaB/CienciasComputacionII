@@ -64,25 +64,80 @@
         <div class="contenedor operacion">
           <h3>Análisis</h3>
           <button onclick="calculateMST()">Árbol Generador Mínimo</button><br><br>
+          <button onclick="calculateSpanningTree()">Árbol de Expansión</button><br><br>
           <button onclick="showCircuits()">Circuitos</button><br><br>
           <button onclick="showFundamentalCircuits()">Circuitos Fundamentales</button><br><br>
           <button onclick="showCutSets()">Conjuntos de Corte</button><br><br>
-          <button onclick="showFundamentalCutSets()">Cortes Fundamentales</button>
+          <button onclick="showFundamentalCutSets()">Cortes Fundamentales</button><br><br>
+          <button onclick="showAppliedDefinitions()">Definiciones Aplicadas</button>
         </div>
         <div id="stats-panel" class="info-panel" style="display: none;">
             <h3>Propiedades</h3>
             <p id="stats-content"></p>
         </div>
+
       </section>
-      <section class="divisor-elem" style="flex: 75%">
+      <section class="divisor-elem" style="flex: 75%; overflow-y: auto; max-height: 90vh;">
         <h2>Visualización</h2>
         
         <div class="graph-container">
-          <h3>Grafo Original / Árbol Generador</h3>
-          <div id="graph" class="graph-canvas" style="height: 500px;"></div>
+          <h3>Grafo Original</h3>
+          <div id="graph" class="graph-canvas" style="height: 400px;"></div>
         </div>
         
-        <div id="matrix-section" class="graph-container" style="display: none;">
+        <!-- MST & Complement Section -->
+        <div id="mst-section" style="display: none; margin-top: 20px;">
+            <div style="display: flex; gap: 20px;">
+                <div class="graph-container" style="flex: 1;">
+                    <h3>Árbol Generador Mínimo (MST)</h3>
+                    <div id="mst-graph" class="graph-canvas" style="height: 300px; border: 1px solid #ccc;"></div>
+                    <div id="mst-props" class="info-panel" style="margin-top: 5px; font-size: 0.9em;"></div>
+                </div>
+                <div class="graph-container" style="flex: 1;">
+                    <h3>Complemento (Cuerdas)</h3>
+                    <div id="complement-graph" class="graph-canvas" style="height: 300px; border: 1px solid #ccc;"></div>
+                    <div id="complement-props" class="info-panel" style="margin-top: 5px; font-size: 0.9em;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Circuits Section -->
+        <div id="circuits-section" style="display: none; margin-top: 20px;">
+            <h3>Circuitos Generados</h3>
+            <div id="circuits-container" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <!-- Circuit graphs will be injected here -->
+            </div>
+        </div>
+
+        <!-- Spanning Tree Section -->
+        <div id="spanning-tree-section" style="display: none; margin-top: 20px;">
+             <div class="graph-container">
+                <h3>Árbol de Expansión Generado</h3>
+                <div id="spanning-tree-graph" class="graph-canvas" style="height: 300px; border: 1px solid #ccc;"></div>
+            </div>
+        </div>
+
+        <!-- Distance Table Section -->
+        <div id="distance-table-section" class="graph-container" style="display: none; margin-top: 20px;">
+            <h3>Tabla de Distancias</h3>
+            <div id="distance-table-content" class="matrix-container"></div>
+            
+            <!-- Applied Definitions Panel (Moved here) -->
+            <div id="definitions-panel" class="info-panel" style="display: none; margin-top: 10px; background: rgba(255, 255, 255, 0.05);">
+                <h3>Métricas</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                    <button onclick="showMetric('eccentricity')">Excentricidad</button>
+                    <button onclick="showMetric('radius')">Radio</button>
+                    <button onclick="showMetric('diameter')">Diámetro</button>
+                    <button onclick="showMetric('center')">Centro</button>
+                    <button onclick="showMetric('median')">Mediana</button>
+                </div>
+                <div id="metric-result" style="margin-top: 10px; font-weight: bold;"></div>
+                <div id="metric-graph" class="graph-canvas" style="height: 300px; border: 1px solid #ccc; margin-top: 10px; display: none;"></div>
+            </div>
+        </div>
+
+        <div id="matrix-section" class="graph-container" style="display: none; margin-top: 20px;">
           <h3 id="matrix-title">Matriz</h3>
           <div id="matrix-content" class="matrix-container"></div>
         </div>
