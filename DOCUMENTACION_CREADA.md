@@ -91,7 +91,7 @@ Se ha creado una documentación **técnica y de usuario completa** para el proye
   - npm install
 - ✅ Configuración local (3 opciones)
 - ✅ Verificación de funcionamiento
-- ✅ Despliegue Firebase completo (6 pasos)
+  - ✅ Despliegue (opcional, hosting estático)
 - ✅ Actualizar despliegue
 - ✅ Configuración avanzada
 - ✅ Desarrollo local con emulador
@@ -233,8 +233,8 @@ Se ha creado una documentación **técnica y de usuario completa** para el proye
 
 ### 🔧 Administradores/DevOps
 - ✅ Instalación paso a paso
-- ✅ Configuración Firebase
-- ✅ Despliegue automatizado
+- ✅ Configuración local
+- ✅ Despliegue automatizado (opcional)
 - ✅ Troubleshooting de infraestructura
 
 ---
@@ -315,7 +315,7 @@ CienciasComputacionII/
 2. 🔜 Revisar documentos
 3. 🔜 Agregar al repositorio
 4. 🔜 Actualizar en GitHub
-5. 🔜 Publicar links en Firebase
+5. 🔜 Publicar links en hosting estático (opcional)
 6. 🔜 Solicitar feedback de usuarios
 
 ---
