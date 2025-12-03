@@ -294,6 +294,17 @@ function performFloydWarshall() {
     next[i][j] = j;
   });
 
+  // Store all intermediate matrices
+  const allMatrices = [];
+  
+  // Store initial matrix (k = -1, before any iterations)
+  allMatrices.push({
+    k: -1,
+    dist: dist.map(row => [...row]),
+    next: next.map(row => [...row]),
+    label: 'Matriz Inicial'
+  });
+
   // Floyd-Warshall algorithm
   for (let k = 0; k < n; k++) {
     for (let i = 0; i < n; i++) {
@@ -304,10 +315,18 @@ function performFloydWarshall() {
         }
       }
     }
+    
+    // Store matrix after iteration k
+    allMatrices.push({
+      k: k,
+      dist: dist.map(row => [...row]),
+      next: next.map(row => [...row]),
+      label: `Matriz después de k=${k} (vía ${nodes[k].label})`
+    });
   }
 
-  // Display results
-  displayFloydResults(nodes, dist, next);
+  // Display results with all matrices
+  displayFloydResults(nodes, allMatrices);
 }
 
 // Function to reconstruct path
@@ -323,13 +342,51 @@ function reconstructPath(next, start, end) {
   return path;
 }
 
+// Global variable to store current matrix state
+let currentMatrixIndex = 0;
+let allStoredMatrices = [];
+let storedNodes = [];
+
 // Display Floyd-Warshall results
-function displayFloydResults(nodes, dist, next) {
+function displayFloydResults(nodes, allMatrices) {
+  // Store globally for navigation
+  allStoredMatrices = allMatrices;
+  storedNodes = nodes;
+  currentMatrixIndex = 0;
+  
+  // Display the first matrix
+  updateMatrixDisplay();
+}
+
+// Function to update the matrix display based on currentMatrixIndex
+function updateMatrixDisplay() {
   const resultDiv = document.getElementById('floyd-result');
   resultDiv.innerHTML = '';
-
+  
+  const nodes = storedNodes;
+  const currentMatrix = allStoredMatrices[currentMatrixIndex];
+  const dist = currentMatrix.dist;
+  const next = currentMatrix.next;
+  const n = nodes.length;
+  
+  // Navigation controls
+  let html = '<div style="margin-bottom: 20px;">';
+  html += `<h4 style="display: inline-block; margin-right: 20px;">${currentMatrix.label}</h4>`;
+  html += `<span style="color: var(--text-main);">Matriz ${currentMatrixIndex + 1} de ${allStoredMatrices.length}</span>`;
+  html += '<div style="margin-top: 10px;">';
+  
+  // Previous button
+  const prevDisabled = currentMatrixIndex === 0 ? 'disabled' : '';
+  html += `<button onclick="navigateMatrix(-1)" ${prevDisabled} style="margin-right: 10px;">← Anterior</button>`;
+  
+  // Next button
+  const nextDisabled = currentMatrixIndex === allStoredMatrices.length - 1 ? 'disabled' : '';
+  html += `<button onclick="navigateMatrix(1)" ${nextDisabled}>Siguiente →</button>`;
+  
+  html += '</div></div>';
+  
   // Create distance matrix table
-  let html = '<h5>Matriz de Distancias Mínimas</h5>';
+  html += '<h5>Matriz de Distancias</h5>';
   html += '<table class="matrix-table">';
   html += '<tr><th></th>';
   nodes.forEach(node => html += `<th>${node.label}</th>`);
@@ -344,73 +401,88 @@ function displayFloydResults(nodes, dist, next) {
     html += '</tr>';
   }
   html += '</table>';
-
-  // Display paths for all pairs
-  html += '<h5>Caminos Más Cortos</h5>';
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = 0; j < nodes.length; j++) {
-      if (i !== j && dist[i][j] !== Infinity) {
-        const pathIndices = reconstructPath(next, i, j);
-        if (pathIndices) {
-          const pathLabels = pathIndices.map(idx => nodes[idx].label);
-          html += `<p>${nodes[i].label} → ${nodes[j].label}: ${pathLabels.join(' → ')} (distancia: ${dist[i][j]})</p>`;
+  
+  // Only show detailed results for the final matrix
+  if (currentMatrixIndex === allStoredMatrices.length - 1) {
+    // Display paths for all pairs
+    html += '<h5>Caminos Más Cortos</h5>';
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = 0; j < nodes.length; j++) {
+        if (i !== j && dist[i][j] !== Infinity) {
+          const pathIndices = reconstructPath(next, i, j);
+          if (pathIndices) {
+            const pathLabels = pathIndices.map(idx => nodes[idx].label);
+            html += `<p>${nodes[i].label} → ${nodes[j].label}: ${pathLabels.join(' → ')} (distancia: ${dist[i][j]})</p>`;
+          }
         }
       }
     }
-  }
 
-  // Calcular excentricidades, radio, diámetro, centro, mediana
-  const n = nodes.length;
-  const excentricidades = [];
-  let radio = Infinity;
-  let diametro = 0;
-  const centro = [];
-  const medianas = [];
-  let minSuma = Infinity;
+    // Calcular excentricidades, radio, diámetro, centro, mediana
+    const excentricidades = [];
+    let radio = Infinity;
+    let diametro = 0;
+    const centro = [];
+    const medianas = [];
+    let minSuma = Infinity;
 
-  for (let i = 0; i < n; i++) {
-    let maxDist = 0;
-    let sumaDist = 0;
-    for (let j = 0; j < n; j++) {
-      if (i !== j) {
-        if (dist[i][j] === Infinity) {
-          maxDist = Infinity;
-          sumaDist = Infinity;
-          break;
+    for (let i = 0; i < n; i++) {
+      let maxDist = 0;
+      let sumaDist = 0;
+      for (let j = 0; j < n; j++) {
+        if (i !== j) {
+          if (dist[i][j] === Infinity) {
+            maxDist = Infinity;
+            sumaDist = Infinity;
+            break;
+          }
+          maxDist = Math.max(maxDist, dist[i][j]);
+          sumaDist += dist[i][j];
         }
-        maxDist = Math.max(maxDist, dist[i][j]);
-        sumaDist += dist[i][j];
       }
+      excentricidades[i] = maxDist;
+      if (maxDist < radio) radio = maxDist;
+      if (maxDist > diametro) diametro = maxDist;
+      if (sumaDist < minSuma) minSuma = sumaDist;
     }
-    excentricidades[i] = maxDist;
-    if (maxDist < radio) radio = maxDist;
-    if (maxDist > diametro) diametro = maxDist;
-    if (sumaDist < minSuma) minSuma = sumaDist;
-  }
 
-  for (let i = 0; i < n; i++) {
-    if (excentricidades[i] === radio) centro.push(nodes[i].label);
-    let sumaDist = 0;
-    for (let j = 0; j < n; j++) {
-      if (i !== j) sumaDist += dist[i][j];
+    for (let i = 0; i < n; i++) {
+      if (excentricidades[i] === radio) centro.push(nodes[i].label);
+      let sumaDist = 0;
+      for (let j = 0; j < n; j++) {
+        if (i !== j) sumaDist += dist[i][j];
+      }
+      if (sumaDist === minSuma) medianas.push(nodes[i].label);
     }
-    if (sumaDist === minSuma) medianas.push(nodes[i].label);
-  }
 
-  // Mostrar resultados adicionales
-html += '<h5>Propiedades del Grafo</h5>';
-html += '<p><strong>Excentricidades:</strong></p><ul>';
-for (let i = 0; i < n; i++) {
-  const ecc = excentricidades[i] === Infinity ? '∞' : excentricidades[i];
-  html += `<li>${nodes[i].label}: ${ecc}</li>`;
+    // Mostrar resultados adicionales
+    html += '<h5>Propiedades del Grafo</h5>';
+    html += '<p><strong>Excentricidades:</strong></p><ul>';
+    for (let i = 0; i < n; i++) {
+      const ecc = excentricidades[i] === Infinity ? '∞' : excentricidades[i];
+      html += `<li>${nodes[i].label}: ${ecc}</li>`;
+    }
+    html += '</ul>';
+    html += `<p><strong>Radio:</strong> ${radio === Infinity ? '∞' : radio}</p>`;
+    html += `<p><strong>Diámetro:</strong> ${diametro === Infinity ? '∞' : diametro}</p>`;
+    html += `<p><strong>Centro:</strong> ${centro.join(', ')}</p>`;
+    html += `<p><strong>Mediana:</strong> ${medianas.join(', ')}</p>`;
+  }
+  
+  resultDiv.innerHTML = html;
 }
-html += '</ul>';
-html += `<p><strong>Radio:</strong> ${radio === Infinity ? '∞' : radio}</p>`;
-html += `<p><strong>Diámetro:</strong> ${diametro === Infinity ? '∞' : diametro}</p>`;
-html += `<p><strong>Centro:</strong> ${centro.join(', ')}</p>`;
-html += `<p><strong>Mediana:</strong> ${medianas.join(', ')}</p>`;
 
-resultDiv.innerHTML = html;
+// Function to navigate between matrices
+function navigateMatrix(direction) {
+  currentMatrixIndex += direction;
+  
+  // Clamp to valid range
+  if (currentMatrixIndex < 0) currentMatrixIndex = 0;
+  if (currentMatrixIndex >= allStoredMatrices.length) {
+    currentMatrixIndex = allStoredMatrices.length - 1;
+  }
+  
+  updateMatrixDisplay();
 }
 
 // Initialize when DOM is ready

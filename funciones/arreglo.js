@@ -17,7 +17,10 @@ class Estructura {
     }
 
     sset(ind, elem){
-        ind = this.#validarIndice(ind);
+        // ind is already 0-based from hash functions
+        if(ind >= this.tam || ind < 0){
+            throw 'Indice fuera del rango válido';
+        }
         if(this.array[ind] == undefined){
             this.array[ind] = elem;
         }

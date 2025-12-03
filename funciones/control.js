@@ -217,10 +217,10 @@ function control() {
     }
     try {
       estructura.sset(hash, clave);
-      htmlElements.inputsTabla[hash - 1].value = formatoEnTabla(
-        estructura.array[hash - 1]
+      htmlElements.inputsTabla[hash].value = formatoEnTabla(
+        estructura.array[hash]
       );
-      htmlElements.avisos.textContent = "Clave agregada en el indice: " + hash;
+      htmlElements.avisos.textContent = "Clave agregada en el indice: " + (hash + 1);
     } catch (e) {
       htmlElements.avisos.textContent = "ERROR: " + e;
     }
@@ -266,16 +266,16 @@ function control() {
     }
     
     if (
-      estructura.array[hash - 1] == undefined ||
-      estructura.array[hash - 1] == null
+      estructura.array[hash] == undefined ||
+      estructura.array[hash] == null
     ) {
       htmlElements.avisos.textContent = "No encontrado";
     } else if (
-      estructura.array[hash - 1] == clave ||
-      (Array.isArray(estructura.array[hash - 1]) &&
-        estructura.array[hash - 1].indexOf(clave) != -1)
+      estructura.array[hash] == clave ||
+      (Array.isArray(estructura.array[hash]) &&
+        estructura.array[hash].indexOf(clave) != -1)
     ) {
-      htmlElements.avisos.textContent = "Encontrado en la posicion: " + hash;
+      htmlElements.avisos.textContent = "Encontrado en la posicion: " + (hash + 1);
     } else {
       htmlElements.avisos.textContent = "No encontrado";
     }

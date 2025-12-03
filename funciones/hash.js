@@ -13,7 +13,7 @@ function hashCuadrado(key, n){
     let diferencia = cuadradoStr.length-nStr.length+1;
     let digsARecortar = diferencia/2; // digitos a recortar por cada lado
     let nuevaKey = cuadradoStr.substring(digsARecortar, cuadradoStr.length-digsARecortar);
-    nuevaKey = parseInt(nuevaKey)+1;
+    nuevaKey = parseInt(nuevaKey);
     // if(cuadradoStr.length > nStr.length-1){
     // }
     // else {
@@ -37,7 +37,7 @@ function hashTruc(key, posiciones){
         digito = (digito == undefined) ? '0' : digito;
         digitos.push(digito)
     }
-    let nuevaKey = parseInt(digitos.join(''))+1;
+    let nuevaKey = parseInt(digitos.join(''));
 
     return nuevaKey;
 }
@@ -48,7 +48,7 @@ function hashTruc(key, posiciones){
  * @param {number} n 
  */
 function hashMod(key, n){
-    return key%n+1
+    return key%n;
 }
 
 /**
@@ -70,6 +70,6 @@ function hashPleg(key, n){
     if(sumaDigitos.toString().length >= numerosSignificativos+1){
         sumaDigitos = parseInt(strSumDigs.substring(strSumDigs.length-numerosSignificativos));
     }
-    return sumaDigitos+1;
+    return sumaDigitos;
 }
 
