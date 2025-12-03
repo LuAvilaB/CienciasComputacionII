@@ -4,15 +4,15 @@
  * @param {number} n 
  * @returns 
  */
-function hashCuadrado(key, n){
+function hashCuadrado(key, n) {
     let result;
     let nStr = n.toString()
 
-    let cuadrado = key*key;
+    let cuadrado = key * key;
     let cuadradoStr = cuadrado.toString();
-    let diferencia = cuadradoStr.length-nStr.length+1;
-    let digsARecortar = diferencia/2; // digitos a recortar por cada lado
-    let nuevaKey = cuadradoStr.substring(digsARecortar, cuadradoStr.length-digsARecortar);
+    let diferencia = cuadradoStr.length - nStr.length + 1;
+    let digsARecortar = diferencia / 2; // digitos a recortar por cada lado
+    let nuevaKey = cuadradoStr.substring(digsARecortar, cuadradoStr.length - digsARecortar);
     nuevaKey = parseInt(nuevaKey);
     // if(cuadradoStr.length > nStr.length-1){
     // }
@@ -29,11 +29,11 @@ function hashCuadrado(key, n){
  * @param {number} posiciones Posiciones con las que truncar, se cuenta desde 1
  * @returns 
  */
-function hashTruc(key, posiciones){
+function hashTruc(key, posiciones) {
     let digitos = [];
     let strKey = key.toString();
-    for(posicion of posiciones){
-        let digito = strKey[posicion-1];
+    for (posicion of posiciones) {
+        let digito = strKey[posicion - 1];
         digito = (digito == undefined) ? '0' : digito;
         digitos.push(digito)
     }
@@ -47,8 +47,8 @@ function hashTruc(key, posiciones){
  * @param {number} key 
  * @param {number} n 
  */
-function hashMod(key, n){
-    return key%n;
+function hashMod(key, n) {
+    return key % n;
 }
 
 /**
@@ -56,20 +56,30 @@ function hashMod(key, n){
  * @param {number} key 
  * @param {number} n 
  */
-function hashPleg(key, n){
+function hashPleg(key, n) {
     let digitosDeRango = n.toString().length - 1;
     const numerosSignificativos = digitosDeRango == 0 ? 1 : digitosDeRango;
-  
+
     const strKey = key.toString();
     const digitosDeKey = strKey.length;
     let sumaDigitos = 0;
-    for(let i=0; i<digitosDeKey; i+=numerosSignificativos){
-        sumaDigitos += parseInt(strKey.substring(i, i+numerosSignificativos));
+    for (let i = 0; i < digitosDeKey; i += numerosSignificativos) {
+        sumaDigitos += parseInt(strKey.substring(i, i + numerosSignificativos));
     }
     let strSumDigs = sumaDigitos.toString();
-    if(sumaDigitos.toString().length >= numerosSignificativos+1){
-        sumaDigitos = parseInt(strSumDigs.substring(strSumDigs.length-numerosSignificativos));
+    if (sumaDigitos.toString().length >= numerosSignificativos + 1) {
+        sumaDigitos = parseInt(strSumDigs.substring(strSumDigs.length - numerosSignificativos));
     }
     return sumaDigitos;
+}
+
+/**
+ * Segunda función hash para doble hashing
+ * Usa la fórmula: hash2(key) = 1 + (key % (n-1))
+ * @param {number} key 
+ * @param {number} n 
+ */
+function hash2(key, n) {
+    return key % (n - 1);
 }
 

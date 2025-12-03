@@ -109,13 +109,17 @@ function quadTrieToCytoscapeElements(node, parentId = null, elements = [], idCou
   const classes = node.isEnd ? 'leaf' : 'internal';
   elements.push({ data: { id: nodeId, label: label }, classes: classes });
   if (parentId) {
-    elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId } });
+    elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId, label: '' } });
   }
   // Recorrer los 4 hijos (incluso si están vacíos, ya que fillEmptyNodes los creó)
   const branchLabels = ['00', '01', '10', '11'];
   for (let i = 0; i < 4; i++) {
     if (node.children[i]) {
+      const childNodeId = `node-${idCounter.value}`;
       quadTrieToCytoscapeElements(node.children[i], nodeId, elements, idCounter, level + 1);
+      // Update the edge label for this child
+      const childEdge = elements.find(e => e.data && e.data.source === nodeId && e.data.target === childNodeId);
+      if (childEdge) childEdge.data.label = branchLabels[i];
     }
   }
   return elements;
@@ -280,10 +284,22 @@ function binaryTrieToCytoscapeElements(node, parentId = null, elements = [], idC
   const classes = node.isEnd ? 'leaf' : 'internal';
   elements.push({ data: { id: nodeId, label: label }, classes: classes });
   if (parentId) {
-    elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId } });
+    elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId, label: '' } });
   }
-  binaryTrieToCytoscapeElements(node.left, nodeId, elements, idCounter, path + '0'); // left = 0
-  binaryTrieToCytoscapeElements(node.right, nodeId, elements, idCounter, path + '1'); // right = 1
+  if (node.left) {
+    const leftNodeId = `node-${idCounter.value}`;
+    binaryTrieToCytoscapeElements(node.left, nodeId, elements, idCounter, path + '0');
+    // Update the edge label for left child
+    const leftEdge = elements.find(e => e.data && e.data.source === nodeId && e.data.target === leftNodeId);
+    if (leftEdge) leftEdge.data.label = '0';
+  }
+  if (node.right) {
+    const rightNodeId = `node-${idCounter.value}`;
+    binaryTrieToCytoscapeElements(node.right, nodeId, elements, idCounter, path + '1');
+    // Update the edge label for right child
+    const rightEdge = elements.find(e => e.data && e.data.source === nodeId && e.data.target === rightNodeId);
+    if (rightEdge) rightEdge.data.label = '1';
+  }
   return elements;
 }
 
@@ -294,10 +310,22 @@ function huffmanTreeToCytoscapeElements(node, parentId = null, elements = [], id
   const label = node.char ? `${node.char} (${node.freq})` : `${node.freq}`;
   elements.push({ data: { id: nodeId, label: label } });
   if (parentId) {
-    elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId } });
+    elements.push({ data: { id: `${parentId}-${nodeId}`, source: parentId, target: nodeId, label: '' } });
   }
-  huffmanTreeToCytoscapeElements(node.left, nodeId, elements, idCounter, code + '0'); // Asumiendo left=0
-  huffmanTreeToCytoscapeElements(node.right, nodeId, elements, idCounter, code + '1'); // right=1
+  if (node.left) {
+    const leftNodeId = `node-${idCounter.value}`;
+    huffmanTreeToCytoscapeElements(node.left, nodeId, elements, idCounter, code + '0');
+    // Update the edge label for left child
+    const leftEdge = elements.find(e => e.data && e.data.source === nodeId && e.data.target === leftNodeId);
+    if (leftEdge) leftEdge.data.label = '0';
+  }
+  if (node.right) {
+    const rightNodeId = `node-${idCounter.value}`;
+    huffmanTreeToCytoscapeElements(node.right, nodeId, elements, idCounter, code + '1');
+    // Update the edge label for right child
+    const rightEdge = elements.find(e => e.data && e.data.source === nodeId && e.data.target === rightNodeId);
+    if (rightEdge) rightEdge.data.label = '1';
+  }
   return elements;
 }
 
@@ -337,7 +365,13 @@ document.addEventListener('DOMContentLoaded', function() {
       'line-color': '#333',
       'target-arrow-color': '#333',
       'target-arrow-shape': 'triangle',
-      'curve-style': 'bezier'
+      'curve-style': 'bezier',
+      'label': 'data(label)',
+      'font-size': '12px',
+      'text-background-color': '#fff',
+      'text-background-opacity': 1,
+      'text-background-padding': '3px',
+      'color': '#000'
     }
   }
 ],

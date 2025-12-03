@@ -8,8 +8,8 @@ function control() {
         <div class="col-i">i</div>
         <div class="col-k">Clave</div>
     </div>`;
- const filaTemplate = (indice, valor) =>
-  `<div class="col-i">${indice}</div>
+  const filaTemplate = (indice, valor) =>
+    `<div class="col-i">${indice}</div>
       <div class="col-k">
           <input class="i-numero2" value='${valor}' type="text" readonly>
       </div>`;
@@ -38,6 +38,7 @@ function control() {
     htmlElements.checkboxVerPasos = document.querySelector("#cb-verP");
     htmlElements.inputTiempo = document.querySelector("#i-t");
     htmlElements.avisos = document.querySelector("#avisos");
+    htmlElements.collisionMethod = document.querySelector("#collision-method");
     document
       .querySelector("#btn-iniciar-arr")
       .addEventListener("click", eventIniciarEstr);
@@ -62,6 +63,13 @@ function control() {
     let n = parseInt(htmlElements.nInput.value);
     let tamClave = parseInt(document.querySelector("#i-tam-clave")?.value || n.toString().length);
     htmlElements.avisos.textContent = "";
+
+    // Validar que se haya seleccionado un método de resolución de colisiones
+    if (htmlElements.collisionMethod && !htmlElements.collisionMethod.value) {
+      htmlElements.avisos.textContent = "Debe seleccionar un método de resolución de colisiones";
+      throw "Debe seleccionar un método de resolución de colisiones";
+    }
+
     if (isNaN(n) || n <= 0) {
       htmlElements.avisos.textContent = "Tamaño de estructura inválido";
       throw "Tamaño de estructura inválido";
@@ -73,7 +81,7 @@ function control() {
       htmlElements.avisos.textContent = "Tamaño de clave inválido";
       throw "Tamaño de clave inválido";
     }
-    
+
     // Leer mem-opt como input hidden con valor directo
     let opt = parseInt(htmlElements.memOpt?.value || 1);
     if (opt == 2) {
@@ -81,11 +89,19 @@ function control() {
     } else {
       estructura = new Estructura(n);
     }
+
+    // Guardar método de resolución de colisiones
+    if (htmlElements.collisionMethod) {
+      estructura.collisionMethod = htmlElements.collisionMethod.value;
+      // Deshabilitar el selector después de crear la estructura
+      htmlElements.collisionMethod.disabled = true;
+    }
+
     digsTam = tamClave;
     dibujarArreglo();
   }
 
-  
+
 
   function eventAgregarClave() {
     if (estructura) {
@@ -99,25 +115,25 @@ function control() {
         if (valorStr.length > digsTam) {
           throw `La clave debe tener máximo ${digsTam} dígitos`;
         }
-        
+
         // Verificar clave repetida
-        if(estructura.array.indexOf(valor) != -1){
+        if (estructura.array.indexOf(valor) != -1) {
           throw 'Clave repetida';
         }
-        
+
         // Insertar de forma ordenada
         let posicion = 0;
-        for(let i = 0; i < estructura.array.length; i++){
-          if(estructura.array[i] !== undefined && estructura.array[i] < valor){
+        for (let i = 0; i < estructura.array.length; i++) {
+          if (estructura.array[i] !== undefined && estructura.array[i] < valor) {
             posicion = i + 1;
           } else {
             break;
           }
         }
-        
+
         // Insertar en la posición correcta
         estructura.array.splice(posicion, 0, valor);
-        
+
         // Redibujar
         dibujarArreglo();
         htmlElements.avisos.textContent = `Clave ${valor} agregada en posición ${posicion + 1}`;
@@ -136,29 +152,29 @@ function control() {
         if (!elimClave) {
           throw "Campo de eliminación no encontrado";
         }
-        
+
         let valor = parseInt(elimClave.value);
         if (isNaN(valor)) {
           throw "Clave invalida";
         }
-        
+
         // Buscar la clave en el array
         let indice = estructura.array.indexOf(valor);
         if (indice === -1) {
           throw "Clave no encontrada en la estructura";
         }
-        
+
         // Eliminar la clave
         estructura.array.splice(indice, 1);
-        
+
         // Verificar si es memoria externa (tiene bloques)
         let optMem = parseInt(htmlElements.memOpt?.selectedOptions ? htmlElements.memOpt.selectedOptions[0].value : htmlElements.memOpt?.value || 1);
-        
+
         if (optMem == 2) {
           // Reestructurar: eliminar undefined/null y mantener bloques
           estructura.array = estructura.array.filter((e) => e !== undefined && e !== null);
         }
-        
+
         // Redibujar
         dibujarArreglo();
         htmlElements.avisos.textContent = `Clave ${valor} eliminada correctamente`;
@@ -175,23 +191,23 @@ function control() {
       htmlElements.avisos.textContent = "ERROR: Primero debe inicializar la estructura";
       return;
     }
-    
+
     // Leer hash-opt correctamente (puede ser select o input hidden)
     let opt = parseInt(htmlElements.hashOpt?.selectedOptions ? htmlElements.hashOpt.selectedOptions[0].value : htmlElements.hashOpt?.value || 1);
     let clave = parseInt(htmlElements.inputHash.value);
-    
+
     if (isNaN(clave)) {
       htmlElements.avisos.textContent = "ERROR: Clave inválida";
       return;
     }
-    
+
     // Validar tamaño de clave
     let claveStr = clave.toString();
     if (claveStr.length > digsTam) {
       htmlElements.avisos.textContent = `ERROR: La clave debe tener máximo ${digsTam} dígitos`;
       return;
     }
-    
+
     let hash;
     switch (opt) {
       case 1:
@@ -215,12 +231,20 @@ function control() {
         htmlElements.avisos.textContent = "ERROR: Función hash no válida";
         return;
     }
+
     try {
-      estructura.sset(hash, clave);
-      htmlElements.inputsTabla[hash].value = formatoEnTabla(
-        estructura.array[hash]
-      );
-      htmlElements.avisos.textContent = "Clave agregada en el indice: " + (hash + 1);
+      // Usar el método de resolución de colisiones si está configurado
+      let finalHash;
+      if (estructura.collisionMethod) {
+        finalHash = estructura.insertWithCollisionResolution(hash, clave, null, clave);
+      } else {
+        estructura.sset(hash, clave);
+        finalHash = hash;
+      }
+
+      // Redibujar toda la estructura para mostrar correctamente los arreglos anidados y encadenamiento
+      dibujarArreglo();
+      htmlElements.avisos.textContent = "Clave agregada en el índice: " + (finalHash + 1);
     } catch (e) {
       htmlElements.avisos.textContent = "ERROR: " + e;
     }
@@ -231,16 +255,16 @@ function control() {
       htmlElements.avisos.textContent = "ERROR: Primero debe inicializar la estructura";
       return;
     }
-    
+
     // Leer hash-opt correctamente (puede ser select o input hidden)
     let opt = parseInt(htmlElements.hashOpt?.selectedOptions ? htmlElements.hashOpt.selectedOptions[0].value : htmlElements.hashOpt?.value || 1);
     let clave = parseInt(htmlElements.inputHash.value);
-    
+
     if (isNaN(clave)) {
       htmlElements.avisos.textContent = "ERROR: Clave inválida";
       return;
     }
-    
+
     let hash;
     switch (opt) {
       case 1:
@@ -264,20 +288,31 @@ function control() {
         htmlElements.avisos.textContent = "ERROR: Función hash no válida";
         return;
     }
-    
-    if (
-      estructura.array[hash] == undefined ||
-      estructura.array[hash] == null
-    ) {
-      htmlElements.avisos.textContent = "No encontrado";
-    } else if (
-      estructura.array[hash] == clave ||
-      (Array.isArray(estructura.array[hash]) &&
-        estructura.array[hash].indexOf(clave) != -1)
-    ) {
-      htmlElements.avisos.textContent = "Encontrado en la posicion: " + (hash + 1);
+
+    // Usar el método de resolución de colisiones si está configurado
+    let foundIndex;
+    if (estructura.collisionMethod) {
+      foundIndex = estructura.searchWithCollisionResolution(hash, clave, null, clave);
+      if (foundIndex !== -1) {
+        htmlElements.avisos.textContent = "Encontrado en la posición: " + (foundIndex + 1);
+      } else {
+        htmlElements.avisos.textContent = "No encontrado";
+      }
     } else {
-      htmlElements.avisos.textContent = "No encontrado";
+      if (
+        estructura.array[hash] == undefined ||
+        estructura.array[hash] == null
+      ) {
+        htmlElements.avisos.textContent = "No encontrado";
+      } else if (
+        estructura.array[hash] == clave ||
+        (Array.isArray(estructura.array[hash]) &&
+          estructura.array[hash].indexOf(clave) != -1)
+      ) {
+        htmlElements.avisos.textContent = "Encontrado en la posición: " + (hash + 1);
+      } else {
+        htmlElements.avisos.textContent = "No encontrado";
+      }
     }
   }
 
