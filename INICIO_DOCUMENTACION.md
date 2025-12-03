@@ -1,11 +1,3 @@
-# 🎉 ¡DOCUMENTACIÓN COMPLETADA! 
-
-## ✅ Misión Cumplida
-
-Se ha creado una **documentación técnica y de usuario completa** para el proyecto **CienciasComputacionII**.
-
----
-
 ## 📚 7 Documentos Creados
 
 ```
