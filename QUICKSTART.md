@@ -117,7 +117,7 @@ O usa Live Server en VS Code:
 
 ---
 
-## 🚀 Despliegue en 3 pasos (opcional)
+## 🚀 Despliegue en 3 pasos
 
 ```bash
 # El proyecto corre localmente, no necesita despliegue
