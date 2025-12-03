@@ -234,15 +234,4 @@ Universidad Distrital
 
 ---
 
-## 🎯 Próximas Mejoras
-
-- [ ] Más algoritmos de búsqueda
-- [ ] Interfaz mejorada
-- [ ] Modo offline
-- [ ] Exportar resultados
-- [ ] Comparativa de rendimiento
-- [ ] Tutoriales en video
-
----
-
 **Para más información, consulta los manuales incluidos en el proyecto.**
